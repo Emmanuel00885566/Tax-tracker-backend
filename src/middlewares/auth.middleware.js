@@ -25,9 +25,10 @@ export const registerValidation = [
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
   body("role")
-    .optional()
-    .isIn(["individual", "company"])
-    .withMessage("Role must be either individual or company"),
+  .notEmpty()
+  .withMessage("Role is required")
+  .isIn(["individual", "company"])
+  .withMessage("Role must be either individual or company"),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
