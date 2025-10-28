@@ -7,13 +7,13 @@ const myValidationResult = validationResult.withDefaults({
 });
 
 const validationMiddleware = (req, res, next) => {
-    const result = myValidationResult(req);
+    const errors = myValidationResult(req);
 
-    if (!result.isEmpty()) {
+    if (!errors.isEmpty()) {
         return res.status(400).json({
             success: false,
             message: "Validation errors",
-            data: result.array(),
+            data: errors.array(),
         });
     }
 

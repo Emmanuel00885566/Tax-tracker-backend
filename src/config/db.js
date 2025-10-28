@@ -4,10 +4,10 @@ import config from "./index.js"
 const sequelize = new Sequelize(
     config.DB_NAME,
     config.DB_USER,
-    config.DB_PASS,
+    config.DB_PASSWORD,
     {
         dialect: config.DB_DIALECT,
-        port: config.PORT,
+        port: config.DB_PORT,
         host: config.DB_HOST,
         logging: false,
     }

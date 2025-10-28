@@ -1,7 +1,9 @@
 import User from "../models/User.js";
-import generateToken from "../utils/generateToken";
+import generateToken from "../utils/generateToken.js";
 
 async function createUser(userData) {
+    console.log('Creating user with data:', userData);
+
     const checkEmailExists = await User.findOne({
         where: { email: userData.email }
     });
@@ -13,28 +15,43 @@ async function createUser(userData) {
     if (checkUserNameExists) throw new Error("User already exists");
 
     const newUser = await User.create(userData);
+    console.log('Creating user with data:', userData);
+
+    const token = generateToken(newUser.id);
+    console.log("Generated token for user:", newUser.id);
 
     return {
-        newUser,
-        token: generateToken(newUser.id)
+        ...newUser.toJSON(),
+        token: token,
     };
 }
 
 async function userLogin(userData) {
-    const checkEmailCorrect = await User.findOne({
+    console.log('Login attempt for email:', userData.email);
+
+    const user = await User.findOne({
         where: { email: userData.email } 
     });
-    if (checkEmailCorrect) throw new Error ("Login failed, confirm email and password are correct!");
+    if (!user) throw new Error ("Login failed, confirm email is correct!");
 
-    const checkPasswordCorrect = await User.matchPassword(password);
-    if (!checkPasswordCorrect) throw new Error("Login failed, confirm email and password are correct!");
+    console.log('User found:', user.toJSON());
+
+    const isPasswordValid = await user.verifyPassword(userData.password);
+    if (!isPasswordValid) {
+        throw new Error("Login failed, confirm password is correct!");
+    }
+
+    const token = generateToken(user.id);
+    console.log(`Generated token for user ${user.id}: ${token}`);
+
+// Login failed, confirm email and password are correct!
 
     return {
-        id: userData.id,
-        username: userData.username,
-        email: userData.email,
-        role: userData.role,
-        token: generateToken(userData.id)
+        ...user.toJSON(),
+        token: token,
     }
-}
+};
+
 export { createUser, userLogin };
+
+// Delete user, update user info, get all users (admin)

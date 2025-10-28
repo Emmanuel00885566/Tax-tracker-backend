@@ -31,6 +31,7 @@ const loginValidator = [
     body("email")
     .notEmpty()
     .withMessage("Email is required to login")
+    .bail()
     .isEmail()
     .withMessage("Invalid email format"),
     body("password")
