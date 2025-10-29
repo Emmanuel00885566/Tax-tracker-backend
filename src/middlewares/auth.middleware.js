@@ -2,11 +2,10 @@ import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
 import rateLimit from "express-rate-limit";
 
-// Rate limiter middleware
-// Limits each IP to 5 requests per minute on sensitive routes like /login or /register
+// Rate limiter for login/register routes (max 5 requests per minute per IP)
 export const authRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // limit each IP to 5 requests per minute
+  max: 5,
   message: {
     success: false,
     message: "Too many attempts. Please try again after a minute.",
@@ -15,19 +14,29 @@ export const authRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Verify JWT token
-export const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader)
-    return res.status(401).json({ message: "No token provided" });
+// Helper function to extract token
+const getToken = (req) => req.headers.authorization?.split(" ")[1];
 
-  const token = authHeader.split(" ")[1];
+// Verify JWT token middleware
+export const verifyToken = (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Access denied. No token provided.",
+    });
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(403).json({ message: "Invalid or expired token" });
+    const msg =
+      err.name === "TokenExpiredError"
+        ? "Token has expired. Please log in again."
+        : "Invalid token.";
+    res.status(403).json({ success: false, message: msg });
   }
 };
 
@@ -46,7 +55,11 @@ export const registerValidation = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: errors.array(),
+      });
     }
     next();
   },
@@ -59,7 +72,11 @@ export const loginValidation = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: errors.array(),
+      });
     }
     next();
   },
