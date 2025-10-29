@@ -1,12 +1,29 @@
-import sequelize from "../config/db.js";
+// src/models/index.js
+import { sequelize } from "../config/db.js";
 import User from "./user.model.js";
 import Transaction from "./transaction.model.js";
 import TaxRecord from "./taxRecord.model.js";
 
-User.hasMany(Transaction, { foreignKey: "user_id" });
-Transaction.belongsTo(User, { foreignKey: "user_id" });
+// ✅ Define associations
+User.hasMany(Transaction, {
+  foreignKey: "userId",
+  as: "transactions",
+  onDelete: "CASCADE",
+});
+Transaction.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
 
-User.hasMany(TaxRecord, { foreignKey: "user_id" });
-TaxRecord.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(TaxRecord, {
+  foreignKey: "userId",
+  as: "taxRecords",
+  onDelete: "CASCADE",
+});
+TaxRecord.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
 
+// ✅ Export models and sequelize instance
 export { sequelize, User, Transaction, TaxRecord };

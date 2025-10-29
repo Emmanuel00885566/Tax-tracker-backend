@@ -1,4 +1,5 @@
 node_modules/
+<<<<<<< HEAD
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -30,3 +31,11 @@ coverage/
 *.sqlite3
 database.sqlite
 database.sqlite3
+=======
+.env
+config.json
+*.log
+logs/
+.DS_Store
+
+>>>>>>> remotes/origin/Database-Model

@@ -5,10 +5,10 @@ import User from "./user.model.js";
 const Transaction = sequelize.define(
   "Transaction",
   {
-    transaction_id: {
+    id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
+      primaryKey: true,
     },
     user_id: {
       type: DataTypes.INTEGER,
@@ -31,9 +31,12 @@ const Transaction = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     is_deductible: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
       defaultValue: false,
     },
     date: {

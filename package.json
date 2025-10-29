@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "tax-tracker-backend",
   "version": "1.0.0",
   "description": "The Tax Tracker App helps individuals and companies calculate, track, and manage their payable taxes based on income, business category, deductible expenses, and applicable Nigerian tax laws.",
@@ -32,4 +33,34 @@
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
+=======
+    "name":  "tax-tracker-backend",
+    "version":  "1.0.0",
+    "description":  "The Tax Tracker App helps individuals and companies calculate, track, and manage their payable taxes based on income, business category, deductible expenses, and applicable Nigerian tax laws.",
+    "main":  "server.js",
+    "scripts":  {
+                    "start":  "node server.js",
+                    "test":  "jest"
+                },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/Emmanuel00885566/Tax-tracker-backend.git"
+                   },
+    "keywords":  [
+
+                 ],
+    "author":  "",
+    "license":  "ISC",
+    "bugs":  {
+                 "url":  "https://github.com/Emmanuel00885566/Tax-tracker-backend/issues"
+             },
+    "homepage":  "https://github.com/Emmanuel00885566/Tax-tracker-backend#readme",
+    "dependencies":  {
+                         "dotenv":  "^17.2.3",
+                         "express":  "^5.1.0",
+                         "mysql2":  "^3.15.3",
+                         "sequelize":  "^6.37.7"
+                     },
+    "type":  "module"
+>>>>>>> remotes/origin/Database-Model
 }

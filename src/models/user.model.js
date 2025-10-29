@@ -9,7 +9,7 @@ const User = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    fullName: {
+    full_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -17,9 +17,7 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true,
-      },
+      validate: { isEmail: true },
     },
     password: {
       type: DataTypes.STRING,
@@ -29,10 +27,15 @@ const User = sequelize.define(
       type: DataTypes.ENUM("individual", "business", "admin"),
       defaultValue: "individual",
     },
+    status: {
+      type: DataTypes.ENUM("active", "inactive"),
+      defaultValue: "active",
+    },
   },
   {
-    timestamps: true,
     tableName: "users",
+    timestamps: true,
+    paranoid: true, // enables soft delete (adds deletedAt)
   }
 );
 
