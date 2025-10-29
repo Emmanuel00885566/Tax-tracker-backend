@@ -35,7 +35,7 @@ const User = sequelize.define(
   {
     tableName: "users",
     timestamps: true,
-    paranoid: true, // enables soft delete (adds deletedAt)
+    paranoid: true, 
   }
 );
 

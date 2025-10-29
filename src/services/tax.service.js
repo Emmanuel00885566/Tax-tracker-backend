@@ -2,7 +2,6 @@ import Transaction from "../models/transaction.model.js";
 import TaxRecord from "../models/taxRecord.model.js";
 import User from "../models/user.model.js";
 import { computePIT, computeCIT } from "../utils/tax.utils.js";
-// import sequelize from "../models/index.js";
 import { Op } from "sequelize";
 
 export async function getTransactionsSummary(userId, { startDate, endDate } = {}) {
