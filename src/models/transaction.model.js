@@ -1,11 +1,11 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import User from "./userModel.js";
+import User from "./user.model.js";
 
-const TaxRecord = sequelize.define(
-  "TaxRecord",
+const Transaction = sequelize.define(
+  "Transaction",
   {
-    record_id: {
+    transaction_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -19,36 +19,38 @@ const TaxRecord = sequelize.define(
       },
       onDelete: "CASCADE",
     },
-    tax_type: {
-      type: DataTypes.ENUM("CIT", "PIT"),
+    type: {
+      type: DataTypes.ENUM("income", "expense"),
       allowNull: false,
     },
-    taxable_income: {
+    amount: {
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
     },
-    tax_amount: {
-      type: DataTypes.DECIMAL(15, 2),
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    is_deductible: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false,
     },
-    period_start: {
+    date: {
       type: DataTypes.DATEONLY,
-      allowNull: true,
-    },
-    period_end: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
-    tableName: "tax_records",
+    tableName: "transactions",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
 
-TaxRecord.belongsTo(User, { foreignKey: "user_id" });
-User.hasMany(TaxRecord, { foreignKey: "user_id" });
+Transaction.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(Transaction, { foreignKey: "user_id" });
 
-export default TaxRecord;
+export default Transaction;

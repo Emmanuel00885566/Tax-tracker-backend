@@ -1,5 +1,3 @@
-
-
 export const DEFAULT_PIT_BRACKETS = [
   
   { upTo: 300000, rate: 0.07 },

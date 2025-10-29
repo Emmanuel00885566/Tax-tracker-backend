@@ -1,6 +1,6 @@
 import express from "express";
-import { computeTaxController, getTaxRecordsController } from "../controllers/taxController.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
+import { computeTaxController, getTaxRecordsController } from "../controllers/tax.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import taxRoutes from "./src/routes/taxRoutes.js";
+import taxRoutes from "./src/routes/tax.routes.js";
 import { sequelize } from "./src/models/index.js";
 
 dotenv.config();
