@@ -1,6 +1,6 @@
 export default (sequelize, DataTypes) => {
-  const TaxRecord = sequelize.define(
-    'TaxRecord',
+  const Notification = sequelize.define(
+    'Notification',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -10,29 +10,26 @@ export default (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: 'Users', key: 'id' }, 
+        references: { model: 'Users', key: 'id' },
       },
-      total_income: {
-        type: DataTypes.DECIMAL(12, 2),
-        defaultValue: 0,
-      },
-      total_deductible_expenses: {
-        type: DataTypes.DECIMAL(12, 2),
-        defaultValue: 0,
-      },
-      tax_payable: {
-        type: DataTypes.DECIMAL(12, 2),
-        defaultValue: 0,
-      },
-      year: {
-        type: DataTypes.INTEGER,
+      title: {
+        type: DataTypes.STRING,
         allowNull: false,
+      },
+      message: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      isRead: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {
-      tableName: 'TaxRecords',
+      tableName: 'Notifications',
       timestamps: true,
     }
   );
-  return TaxRecord;
+
+  return Notification;
 };

@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: 'Users', key: 'id'},
+        references: { model: 'Users', key: 'id' },
       },
       total_income: {
         type: DataTypes.DECIMAL(12, 2),
@@ -24,9 +24,13 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL(12, 2),
         defaultValue: 0,
       },
-      year: {
+      tax_year: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      status: {
+        type: DataTypes.ENUM('pending', 'paid', 'overdue'),
+        defaultValue: 'pending',
       },
     },
     {
@@ -34,5 +38,6 @@ export default (sequelize, DataTypes) => {
       timestamps: true,
     }
   );
+
   return TaxRecord;
 };

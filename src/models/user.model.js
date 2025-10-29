@@ -25,11 +25,17 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.ENUM('individual', 'company', 'admin'),
         allowNull: false,
       },
+      status: {
+        type: DataTypes.ENUM('active', 'inactive'),
+        defaultValue: 'active',
+      },
     },
     {
       tableName: 'Users',
-      timestamps: true, // Adds createdAt, updatedAt
+      timestamps: true, 
+      paranoid: true,   
     }
   );
+
   return User;
 };

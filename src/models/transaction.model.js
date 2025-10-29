@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: 'Users', key: 'id' }, 
+        references: { model: 'Users', key: 'id' },
       },
       amount: {
         type: DataTypes.DECIMAL(10, 2),
@@ -24,9 +24,13 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.ENUM('income', 'expense'),
         allowNull: false,
       },
+      category: {
+        type: DataTypes.STRING,
+        allowNull: true, 
+      },
       is_deductible: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false, // For expenses
+        defaultValue: false,
       },
     },
     {
@@ -34,5 +38,6 @@ export default (sequelize, DataTypes) => {
       timestamps: true,
     }
   );
+
   return Transaction;
 };

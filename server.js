@@ -1,22 +1,34 @@
-import express from 'express';
-import { syncDB } from './src/models/index.js';
-import 'dotenv/config';
+import express from "express";
+import dotenv from "dotenv";
+import taxRoutes from "./src/routes/tax.routes.js";
+import { syncDB } from "./src/models/index.js"; 
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-
-app.get('/', async (req, res) => {
-  await syncDB();
-  res.json({ 
-    message: 'Tax Tracker API - Database Synced!', 
-    status: 'success' 
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to TaxBuddy API 🚀",
+    status: "success",
   });
 });
 
-app.listen(PORT, async () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  await syncDB(); 
-});
+app.use("/api/tax", taxRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+const startServer = async () => {
+  try {
+    await syncDB(false); 
+    console.log("✅ Database synced successfully.");
+    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+  } catch (err) {
+    console.error("❌ Failed to start server:", err.message);
+    process.exit(1);
+  }
+};
+
+startServer();
