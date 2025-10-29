@@ -1,8 +1,0 @@
-# dependencies
-node_modules
-
-# environment files
-.env
-
-# system
-.DS_Store
