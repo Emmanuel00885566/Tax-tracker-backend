@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import taxRoutes from "./src/routes/taxRoutes.js";
+import transactionRoute from "./src/routes/transactionRoute.js";
 import { sequelize } from "./src/models/index.js";
 
 dotenv.config();
@@ -13,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/tax", taxRoutes);
+app.use("/api/transactions", transactionRoute);
 
 const PORT = process.env.PORT || 5000;
 
