@@ -1,22 +1,40 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import { body, validationResult } from "express-validator";
+import rateLimit from "express-rate-limit";
 
-dotenv.config();
+// Rate limiter for login/register routes (max 5 requests per minute per IP)
+export const authRateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 5,
+  message: {
+    success: false,
+    message: "Too many attempts. Please try again after a minute.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-const authMiddleware = (req, res, next) => {
+// Helper function to extract Bearer token
+const getToken = (req) => {
   const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+  return authHeader.split(" ")[1];
+};
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided or invalid format" });
+// Verify JWT token middleware
+export const verifyToken = (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Access denied. No token provided or invalid format.",
+    });
   }
-
-  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-<<<<<<< HEAD
   } catch (err) {
     const msg =
       err.name === "TokenExpiredError"
@@ -67,12 +85,3 @@ export const loginValidation = [
     next();
   },
 ];
-=======
-  } catch (error) {
-    console.error("JWT verification failed:", error.message);
-    return res.status(403).json({ message: "Invalid or expired token" });
-  }
-};
-
-export default authMiddleware;
->>>>>>> f5559883edf04ade6a7eb30f410e0b66df986659

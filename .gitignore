@@ -1,9 +1,5 @@
 node_modules/
 <<<<<<< HEAD
-.env
-.env.example
-=======
-<<<<<<< HEAD
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -43,4 +39,3 @@ logs/
 .DS_Store
 
 >>>>>>> remotes/origin/Database-Model
->>>>>>> f5559883edf04ade6a7eb30f410e0b66df986659
