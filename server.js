@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import reportRoutes from './routes/report.routes.js';
+import reportRoutes from './src/routes/report.routes.js';
 
 const app = express();
 app.use(express.json());
