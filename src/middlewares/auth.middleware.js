@@ -14,8 +14,12 @@ export const authRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Helper function to extract token
-const getToken = (req) => req.headers.authorization?.split(" ")[1];
+// Helper function to extract Bearer token
+const getToken = (req) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+  return authHeader.split(" ")[1];
+};
 
 // Verify JWT token middleware
 export const verifyToken = (req, res, next) => {
@@ -23,7 +27,7 @@ export const verifyToken = (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: "Access denied. No token provided.",
+      message: "Access denied. No token provided or invalid format.",
     });
   }
 
