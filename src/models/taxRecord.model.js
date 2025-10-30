@@ -1,14 +1,14 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import User from "./userModel.js";
+import User from "./user.model.js";
 
 const TaxRecord = sequelize.define(
   "TaxRecord",
   {
-    record_id: {
+    id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
+      primaryKey: true,
     },
     user_id: {
       type: DataTypes.INTEGER,
@@ -23,7 +23,7 @@ const TaxRecord = sequelize.define(
       type: DataTypes.ENUM("CIT", "PIT"),
       allowNull: false,
     },
-    taxable_income: {
+    taxable_amount: {
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
     },
@@ -31,13 +31,13 @@ const TaxRecord = sequelize.define(
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
     },
-    period_start: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
+    tax_year: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-    period_end: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
+    status: {
+      type: DataTypes.ENUM("pending", "paid", "overdue"),
+      defaultValue: "pending",
     },
   },
   {

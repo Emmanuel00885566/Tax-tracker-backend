@@ -10,7 +10,10 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Welcome to Tax Tracker API");
+  res.json({
+    message: "Welcome to TaxBuddy API 🚀",
+    status: "success",
+  });
 });
 
 app.use("/api/tax", taxRoutes);
@@ -18,10 +21,18 @@ app.use("/api/transactions", transactionRoute);
 
 const PORT = process.env.PORT || 5000;
 
-// Sync database
-sequelize.sync({ alter: true })
-  .then(() => {
+const startServer = async () => {
+  try {
+    await sequelize.sync({ alter: true });
     console.log("✅ Models synchronized with database.");
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-  })
-  .catch(err => console.error("❌ Model sync failed:", err));
+
+    app.listen(PORT, () =>
+      console.log(`🚀 Server running on http://localhost:${PORT}`)
+    );
+  } catch (err) {
+    console.error("❌ Failed to start server:", err.message);
+    process.exit(1);
+  }
+};
+
+startServer();

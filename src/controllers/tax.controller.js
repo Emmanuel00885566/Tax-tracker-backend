@@ -1,4 +1,4 @@
-import { computeTaxForUser, fetchTaxRecords } from "../services/taxService.js";
+import { computeTaxForUser, fetchTaxRecords } from "../services/tax.service.js";
 
 export async function computeTaxController(req, res) {
   try {
