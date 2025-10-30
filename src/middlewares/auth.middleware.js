@@ -1,19 +1,24 @@
 import jwt from 'jsonwebtoken';
 
 export function verifyToken(req, res, next) {
-  const authHeader = req.headers.authorization || '';
+  const h = req.headers.authorization || '';
+  console.log('Auth header:', h); // debug
 
-  if (!authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Access denied. No token provided.' });
+  if (!h.startsWith('Bearer ')) {
+    console.log('❌ No Bearer token');
+    return res.status(401).json({ message: 'No token' });
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = h.split(' ')[1];
+  console.log('Token:', token);
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret');
-    req.user = decoded; // attach decoded user info (e.g., id, email, etc.)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('✅ Decoded token:', decoded);
+    req.user = { id: decoded.id || 'dev-user' };
     next();
   } catch (err) {
-    return res.status(403).json({ message: 'Invalid or expired token.' });
+    console.log('❌ JWT error:', err.message);
+    return res.status(403).json({ message: 'Invalid or expired token' });
   }
 }
