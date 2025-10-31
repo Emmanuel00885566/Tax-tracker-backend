@@ -1,5 +1,4 @@
 import express from "express";
-import config from "./config/index.js";
 import {connectDB} from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 // Make use of logger if necessary later on

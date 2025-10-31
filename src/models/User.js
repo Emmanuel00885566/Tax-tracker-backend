@@ -6,22 +6,11 @@ const User = sequelize.define(
 "User",
 {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    username: { type: DataTypes.STRING, allowNull: false, unique: true }, //can be split if there's stil time (first, middle, last)
+    username: { type: DataTypes.STRING, allowNull: false, unique: true },
     email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
     password: { type: DataTypes.STRING, allowNull: false },
-    role: { type: DataTypes.ENUM("individual", "business", "admin"), allowNull: false, defaultValue: "individual" },
-    tin: { type: DataTypes.INTEGER, unique:true },
-     annualIncomeRange: {
-    type: DataTypes.ENUM(
-      '₦0 - ₦100,000',
-      '₦100,001 - ₦500,000',
-      '₦500,001 - ₦1,000,000',
-      '₦1,000,001 - ₦5,000,000',
-      'Above ₦5,000,000'
-    ),
-    allowNull: false,
-  },
-    tax_reminder: { type: DataTypes.BOOLEAN, defaultValue: true},
+    role: { type: DataTypes.ENUM("individual", "company", "admin"), allowNull: false, defaultValue: "individual" },
+    profilePicture: { type: DataTypes.STRING, allowNull: true },
 },
 { /*tableName: "Users",*/ timestamps: true,
     hooks: {
@@ -53,6 +42,3 @@ User.prototype.verifyPassword = async function (password) {
 };
 
 export default User;
-
-// how do I make sure that business details stays with business people
-// check for that sync:true stuff so that it can effect changes

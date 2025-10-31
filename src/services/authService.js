@@ -1,5 +1,5 @@
-import User from "../models/User.js";
-import generateToken from "../utils/generateToken.js";
+import User from "../models/index.js";
+import { generateToken } from "../utils/generateToken.js";
 
 async function createUser(userData) {
     console.log('Creating user with data:', userData);

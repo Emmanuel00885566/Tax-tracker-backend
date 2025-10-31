@@ -1,6 +1,6 @@
 import { createUser, userLogin } from "../services/authService.js";
-import { IndividualProfile } from "../models/individualProfile.js";
-import { BusinessProfile } from "../models/businessProfile.js";
+//import { IndividualProfile } from "../models/individualProfile.js";
+import BusinessProfile from "../models/businessProfile.js";
 
 async function registerUser(req, res) {
     try {
@@ -55,7 +55,7 @@ async function loginUser(req, res) {
     }
 };
 
-export const resetPasswordWithToken = async (req, res) => {
+const resetPasswordWithToken = async (req, res) => {
   try {
     const { token } = req.params;
     const { password, confirmPassword } = req.body;
@@ -93,7 +93,7 @@ export const resetPasswordWithToken = async (req, res) => {
   }
 };
 
-export const updateReminderPreference = async (req, res) => {
+const updateReminderPreference = async (req, res) => {
   try {
     const { receive_tax_reminders } = req.body;
 

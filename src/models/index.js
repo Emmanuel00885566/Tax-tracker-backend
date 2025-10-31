@@ -4,6 +4,7 @@ import User from "./user.model.js";
 import Transaction from "./transaction.model.js";
 import TaxRecord from "./taxRecord.model.js";
 import NotificationModel from "./notification.model.js";
+import BusinessProfile from "./businessProfile.js";
 
 const Notification = NotificationModel(sequelize, DataTypes);
 
@@ -38,4 +39,4 @@ sequelize
   .then(() => console.log("✅ Tables dropped and re-created successfully"))
   .catch((err) => console.error("❌ Error syncing models:", err.message));
 
-export { sequelize, User, Transaction, TaxRecord, Notification };
+export { sequelize, User, Transaction, TaxRecord, Notification, BusinessProfile };
