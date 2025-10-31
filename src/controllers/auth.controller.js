@@ -1,4 +1,4 @@
-import { createUser, userLogin } from "../services/authService.js";
+import { createUser, userLogin } from "../services/auth.service.js";
 
 // @desc Register a new user
 export async function registerUser(req, res) {
