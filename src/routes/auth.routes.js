@@ -10,8 +10,6 @@ import {
   loginValidator,
   validationMiddleware,
 } from "../utils/validators.js";
-
-
 const router = express.Router();
 
 router.post("/signup", registrationValidator, validationMiddleware, registerUser);

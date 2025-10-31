@@ -2,9 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
+// server.js
+import './src/jobs/reminder.cron.js';
 import sequelize, { connectDB } from "./src/config/db.js";
 import taxRoutes from "./src/routes/tax.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
+import reminderRoutes from './src/routes/reminder.routes.js';
 
 dotenv.config();
 
@@ -23,6 +26,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tax", taxRoutes);
+app.use('/api/reminders', reminderRoutes);
 
 const PORT = process.env.PORT || 5000;
 
