@@ -1,11 +1,14 @@
-import { createUser, userLogin } from "../services/auth.service.js";
+import { 
+  createUser, 
+  userLogin, 
+  requestPasswordReset, 
+  resetPassword 
+} from "../services/auth.service.js";
 
-// @desc Register a new user
 export async function registerUser(req, res) {
   try {
     const { username, email, password, role, profilePicture } = req.body;
-
-    const roleToUse = role || "individual"; // fallback default
+    const roleToUse = role || "individual"; 
     const userData = await createUser({ username, email, password, role: roleToUse, profilePicture });
 
     res.status(201).json({
@@ -21,7 +24,6 @@ export async function registerUser(req, res) {
   }
 }
 
-// @desc Login a user
 export async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
@@ -41,22 +43,41 @@ export async function loginUser(req, res) {
   }
 }
 
-// @desc Change password (to be implemented)
-export async function changePassword(req, res) {
+export async function forgotPassword(req, res) {
   try {
-    // You’ll implement this after JWT middleware and user service update
-    res.status(501).json({ success: false, message: "Not implemented yet" });
+    const { email } = req.body;
+    const token = await requestPasswordReset(email);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset token generated successfully",
+      resetToken: token,
+    });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 }
 
-// @desc Request OTP for email verification (future use)
-export async function getEmailOTP(req, res) {
-  res.status(501).json({ success: false, message: "Not implemented yet" });
+export async function resetPasswordController(req, res) {
+  try {
+    const { token, newPassword } = req.body;
+    await resetPassword(token, newPassword);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successful. You can now log in with your new password.",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
 }
 
-// @desc Verify email OTP (future use)
-export async function verifyEmailOTP(req, res) {
+export async function changePassword(req, res) {
   res.status(501).json({ success: false, message: "Not implemented yet" });
 }

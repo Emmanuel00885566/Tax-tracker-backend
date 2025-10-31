@@ -18,7 +18,7 @@ const registrationValidator = [
     .withMessage("Password is reqired")
     .bail()
     .isLength({ min: 8 })
-    .withMessage("Password must have at least 8 characters"), // Logic for accepted password combo (uppercase, number, special character)
+    .withMessage("Password must have at least 8 characters"), 
     body("confirmPassword").custom((value, { req }) => {
         if (req.body.password && value !== req.body.password) {
             throw new Error("Passwords do not match!");

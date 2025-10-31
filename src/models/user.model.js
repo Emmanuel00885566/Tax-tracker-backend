@@ -42,6 +42,14 @@ const User = sequelize.define(
       type: DataTypes.ENUM("active", "inactive"),
       defaultValue: "active",
     },
+    resetToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetTokenExpiry: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     tableName: "users",

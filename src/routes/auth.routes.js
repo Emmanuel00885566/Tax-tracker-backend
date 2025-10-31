@@ -3,40 +3,20 @@ import {
   registerUser,
   loginUser,
   forgotPassword,
-  resetPassword,
+  resetPasswordController,
 } from "../controllers/auth.controller.js";
+
 import {
   registerValidation,
   loginValidation,
-  verifyToken,
-  authRateLimiter,
+  validationMiddleware,
 } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-/* ============================================================
-   AUTH ROUTES
-   ============================================================ */
-
-// Register a new user
-router.post("/signup", authRateLimiter, registerValidation, registerUser);
-
-// Login user
-router.post("/login", authRateLimiter, loginValidation, loginUser);
-
-// Forgot password (sends reset token via email)
-router.post("/forgot-password", authRateLimiter, forgotPassword);
-
-// Reset password using token
-router.post("/reset-password", authRateLimiter, resetPassword);
-
-/* Optional test-protected route */
-router.get("/me", verifyToken, (req, res) => {
-  res.json({
-    success: true,
-    message: "Authenticated user route",
-    user: req.user,
-  });
-});
+router.post("/signup", registerValidation, validationMiddleware, registerUser);
+router.post("/login", loginValidation, validationMiddleware, loginUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPasswordController);
 
 export default router;

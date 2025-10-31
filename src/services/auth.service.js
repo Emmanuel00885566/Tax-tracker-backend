@@ -1,57 +1,33 @@
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
-import generateToken from "../utils/generate.token.js";
 
-async function createUser(userData) {
-    console.log('Creating user with data:', userData);
+export async function requestPasswordReset(email) {
+  const user = await User.findOne({ where: { email } });
+  if (!user) throw new Error("User not found");
 
-    const checkEmailExists = await User.findOne({
-        where: { email: userData.email }
-    });
-    if (checkEmailExists) throw new Error("Email already exists");
+  const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-    const checkUserNameExists = await User.findOne({
-        where: { username: userData.username }
-    });
-    if (checkUserNameExists) throw new Error("User already exists");
+  user.resetToken = resetToken;
+  user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); 
+  await user.save();
 
-    const newUser = await User.create(userData);
-    console.log('Creating user with data:', userData);
-
-    const token = generateToken(newUser.id);
-    console.log("Generated token for user:", newUser.id);
-
-    return {
-        ...newUser.toJSON(),
-        token: token,
-    };
+  return resetToken;
 }
 
-async function userLogin(userData) {
-    console.log('Login attempt for email:', userData.email);
+export async function resetPassword(token, newPassword) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByPk(decoded.id);
 
-    const user = await User.findOne({
-        where: { email: userData.email } 
-    });
-    if (!user) throw new Error ("Login failed, confirm email is correct!");
+    if (!user) throw new Error("Invalid or expired token");
 
-    console.log('User found:', user.toJSON());
-
-    const isPasswordValid = await user.verifyPassword(userData.password);
-    if (!isPasswordValid) {
-        throw new Error("Login failed, confirm password is correct!");
-    }
-
-    const token = generateToken(user.id);
-    console.log(`Generated token for user ${user.id}: ${token}`);
-
-// Login failed, confirm email and password are correct!
-
-    return {
-        ...user.toJSON(),
-        token: token,
-    }
-};
-
-export { createUser, userLogin };
-
-// Delete user, update user info, get all users (admin)
+    const hashed = await bcrypt.hash(newPassword, 10);
+    user.password = hashed;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+    await user.save();
+  } catch (error) {
+    throw new Error("Invalid or expired token");
+  }
+}

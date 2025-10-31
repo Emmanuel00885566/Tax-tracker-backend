@@ -2,12 +2,10 @@ import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
 import rateLimit from "express-rate-limit";
 
-/* ============================================================
-   RATE LIMITING (Prevent brute force)
-   ============================================================ */
+
 export const authRateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // 5 requests per minute per IP
+  windowMs: 1 * 60 * 1000, 
+  max: 5, 
   message: {
     success: false,
     message: "Too many attempts. Please try again after a minute.",
@@ -16,18 +14,12 @@ export const authRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-/* ============================================================
-   TOKEN EXTRACTION HELPER
-   ============================================================ */
 const getToken = (req) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
   return authHeader.split(" ")[1];
 };
 
-/* ============================================================
-   VERIFY JWT TOKEN (Protect routes)
-   ============================================================ */
 export const verifyToken = (req, res, next) => {
   const token = getToken(req);
   if (!token) {
@@ -39,7 +31,7 @@ export const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // store user data in request
+    req.user = decoded;
     next();
   } catch (err) {
     const msg =
@@ -50,9 +42,6 @@ export const verifyToken = (req, res, next) => {
   }
 };
 
-/* ============================================================
-   ROLE-BASED ACCESS CONTROL
-   ============================================================ */
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
@@ -65,9 +54,6 @@ export const authorizeRoles = (...allowedRoles) => {
   };
 };
 
-/* ============================================================
-   VALIDATION FOR REGISTER
-   ============================================================ */
 export const registerValidation = [
   body("username").notEmpty().withMessage("Username is required"),
   body("email").isEmail().withMessage("Valid email is required"),
@@ -91,9 +77,6 @@ export const registerValidation = [
   },
 ];
 
-/* ============================================================
-   VALIDATION FOR LOGIN
-   ============================================================ */
 export const loginValidation = [
   body("email").isEmail().withMessage("Valid email is required"),
   body("password").notEmpty().withMessage("Password is required"),
