@@ -2,9 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import cors from "cors";
-import { connectDB } from "./src/config/db.js";
-import sequelize from "./src/config/db.js";
-
+import sequelize, { connectDB } from "./src/config/db.js";
 import taxRoutes from "./src/routes/tax.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
 
@@ -31,7 +29,7 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    await sequelize.sync({ alter: true }); 
+    await sequelize.sync(); 
     console.log("✅ Models synchronized with database.");
 
     app.listen(PORT, () =>
