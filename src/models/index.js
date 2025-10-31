@@ -27,6 +27,12 @@ TaxRecord.belongsTo(User, {
   as: "user",
 });
 
+User.hasOne(BusinessProfile, { 
+  foreignKey: "userId", 
+  onDelete: "CASCADE" });
+BusinessProfile.belongsTo(User, { 
+  foreignKey: "userId" });
+
 sequelize
   .sync() 
   .then(() => console.log("✅ Tables dropped and re-created successfully"))

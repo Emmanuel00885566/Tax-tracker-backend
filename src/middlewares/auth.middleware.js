@@ -46,16 +46,21 @@ export const verifyToken = (req, res, next) => {
 
 // Validation middleware for registration
 export const registerValidation = [
-  body("name").notEmpty().withMessage("Name is required"),
+  body("fullname").notEmpty().withMessage("Name is required"), // changed name to fullname
   body("email").isEmail().withMessage("Valid email is required"),
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-  body("role")
+  body("confirm_password")
+    .notEmpty()
+    .withMessage("Please confirm your password")
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage("Passwords do not match!"),
+  body("account_type") // changed role to account_type here because of change made to authController
     .notEmpty()
     .withMessage("Role is required")
-    .isIn(["individual", "company"])
-    .withMessage("Role must be either individual or company"),
+    .isIn(["individual", "business"])
+    .withMessage("Role must be either individual or business"),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -67,7 +72,7 @@ export const registerValidation = [
     }
     next();
   },
-];
+]; // There is no confirm password
 
 // Validation middleware for login
 export const loginValidation = [

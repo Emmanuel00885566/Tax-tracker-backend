@@ -17,12 +17,12 @@ async function createUser(userData) {
     const newUser = await User.create(userData);
     console.log('Creating user with data:', userData);
 
-    const token = generateToken(newUser.id);
-    console.log("Generated token for user:", newUser.id);
+    // const token = generateToken(newUser.id);
+    // console.log("Generated token for user:", newUser.id);
 
     return {
         ...newUser.toJSON(),
-        token: token,
+        // token: token,
     };
 }
 
@@ -41,7 +41,7 @@ async function userLogin(userData) {
         throw new Error("Login failed, confirm password is correct!");
     }
 
-    const token = generateToken(user.id);
+    const token = generateToken(user);
     console.log(`Generated token for user ${user.id}: ${token}`);
 
 // Login failed, confirm email and password are correct!
@@ -55,3 +55,4 @@ async function userLogin(userData) {
 export { createUser, userLogin };
 
 // Delete user, update user info, get all users (admin)
+// Signup should also generate token (optional)
