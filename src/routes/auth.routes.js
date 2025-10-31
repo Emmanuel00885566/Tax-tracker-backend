@@ -6,19 +6,17 @@ import {
   resetPasswordController,
 } from "../controllers/auth.controller.js";
 import {
-  registerValidation,
-  loginValidation,
-} from "../middlewares/auth.middleware.js";
+  registrationValidator,
+  loginValidator,
+  validationMiddleware,
+} from "../utils/validators.js";
+
 
 const router = express.Router();
 
-// User registration
-router.post("/signup", registerValidation, registerUser);
+router.post("/signup", registrationValidator, validationMiddleware, registerUser);
+router.post("/login", loginValidator, validationMiddleware, loginUser);
 
-// User login
-router.post("/login", loginValidation, loginUser);
-
-// Password reset
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPasswordController);
 

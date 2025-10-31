@@ -58,9 +58,6 @@ export async function userLogin({ email, password }) {
   };
 }
 
-/**
- * @desc Request password reset token
- */
 export async function requestPasswordReset(email) {
   const user = await User.findOne({ where: { email } });
   if (!user) throw new Error("User not found.");
@@ -72,15 +69,13 @@ export async function requestPasswordReset(email) {
   );
 
   user.resetToken = resetToken;
-  user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+  user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); 
   await user.save();
 
   return resetToken;
 }
 
-/**
- * @desc Reset password with valid token
- */
+
 export async function resetPassword(token, newPassword) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

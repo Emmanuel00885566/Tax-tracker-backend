@@ -11,7 +11,6 @@ const User = sequelize.define(
       primaryKey: true,
     },
 
-    // Matches controller/service field naming
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -64,7 +63,7 @@ const User = sequelize.define(
   {
     tableName: "users",
     timestamps: true,
-    paranoid: true, // enables soft delete
+    paranoid: true, 
     hooks: {
       beforeCreate: async (user) => {
         if (user.username) user.username = user.username.toLowerCase();
@@ -91,7 +90,6 @@ const User = sequelize.define(
   }
 );
 
-// ✅ Instance method to verify password
 User.prototype.verifyPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };

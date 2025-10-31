@@ -7,10 +7,8 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// Compute tax for a specific user
 router.post("/compute/:userId", verifyToken, computeTaxController);
 
-// Fetch tax records for a specific user
 router.get("/records/:userId", verifyToken, getTaxRecordsController);
 
 export default router;

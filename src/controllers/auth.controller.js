@@ -75,9 +75,6 @@ export async function forgotPassword(req, res) {
   }
 }
 
-/**
- * @desc Reset password with token
- */
 export async function resetPasswordController(req, res) {
   try {
     const { token, newPassword } = req.body;
@@ -96,9 +93,7 @@ export async function resetPasswordController(req, res) {
   }
 }
 
-/**
- * @desc Placeholder for change password (future update)
- */
+
 export async function changePassword(req, res) {
   return res
     .status(501)

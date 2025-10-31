@@ -80,9 +80,7 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-/* ==============================
-   REGISTER VALIDATION
-================================= */
+
 export const registerValidation = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Valid email is required"),
@@ -96,9 +94,6 @@ export const registerValidation = [
   handleValidationErrors,
 ];
 
-/* ==============================
-   LOGIN VALIDATION
-================================= */
 export const loginValidation = [
   body("email").isEmail().withMessage("Valid email is required"),
   body("password").notEmpty().withMessage("Password is required"),
