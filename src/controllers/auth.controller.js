@@ -1,70 +1,92 @@
-import { createUser, userLogin, getUserProfile, getBusinessProfile, updateUserProf, updateBusinessProf, updateRemPreference, changePass, deleteUserProfile } from "../services/auth.service.js";
-//import { IndividualProfile } from "../models/individualProfile.js";
+import {
+  createUser,
+  userLogin,
+  getUserProfile,
+  getBusinessProfile,
+  updateUserProf,
+  updateBusinessProf,
+  updateRemPreference,
+  changePass,
+  deleteUserProfile
+} from "../services/auth.service.js";
+
+import { sendEmailOTP } from "../services/otp.service.js"; // ✅ Added import
 import BusinessProfile from "../models/business.profile.js";
 
-// I'll have to create admin profile after all (not priority)
-// Currently: business is required to enter fullname. Not meant to be so
-// Business will have its own revenue range option which is typically higher than individual
-
+// ======================= REGISTER ==========================
 async function registerUser(req, res) {
-    try {
-        // role = "individual", Try if the default value will hold on its own
-        const { fullname, email, password, account_type, tax_identification_number, annualIncomeRange, tax_reminder=true } = req.body;
-        const newUser =await createUser({ 
-            username:fullname, 
-            email, 
-            password, 
-            role:account_type, 
-            tin:tax_identification_number,
-            annualIncomeRange, 
-            tax_reminder,
-        });
+  try {
+    const {
+      fullname,
+      email,
+      password,
+      account_type,
+      tax_identification_number,
+      annualIncomeRange,
+      tax_reminder = true,
+      businessName,
+      businessType
+    } = req.body;
 
-        if (account_type === 'business') {
-            const { businessName, businessType } = req.body;
-            await BusinessProfile.create({
-                userId: newUser.id,
-                businessName,
-                businessType,
-            });
-        };
+    // ✅ Create user
+    const newUser = await createUser({
+      username: fullname?.trim() || email.split("@")[0],
+      email,
+      password,
+      role: account_type,
+      tin: tax_identification_number || null,
+      annualIncomeRange,
+      tax_reminder,
+    });
 
-        await sendEmailOTP(newUser);
-
-        res.status(201).json({ success: true, 
-            message: "User registration successful", 
-            data: newUser 
-        });
-    } catch (error) {
-        res.status(400).json({ 
-            success: false, 
-            message: error.message 
-        });
+    // ✅ If business account, create business profile
+    if (account_type === "business") {
+      await BusinessProfile.create({
+        userId: newUser.id,
+        businessName,
+        businessType,
+      });
     }
-};
 
+    // ✅ Send OTP for email verification
+    await sendEmailOTP(newUser);
+
+    res.status(201).json({
+      success: true,
+      message: "User registration successful. Verification OTP sent to email.",
+      data: newUser,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+// ======================= LOGIN ==========================
 async function loginUser(req, res) {
-    try {
-        const { email, password } = req.body;
-        const user = await userLogin({ email, password });
+  try {
+    const { email, password } = req.body;
+    const user = await userLogin({ email, password });
 
-        res.status(200).json({
-            success: true,
-            message: "User login successful",
-            data: user
-        });
-    } catch (error) {
-        res.status(400).json({ 
-            success: false,
-            message: error.message 
-        });
-    }
-};
+    res.status(200).json({
+      success: true,
+      message: "User login successful",
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 
+// ======================= FETCH PROFILES ==========================
 const fetchUserProfile = async (req, res) => {
   try {
     const data = await getUserProfile(req.user);
-
     res.status(200).json({
       success: true,
       message: "User profile retrieved successfully",
@@ -82,7 +104,6 @@ const fetchUserProfile = async (req, res) => {
 const fetchBusinessProfile = async (req, res) => {
   try {
     const data = await getBusinessProfile(req.user);
-
     res.status(200).json({
       success: true,
       message: "Business profile retrieved successfully",
@@ -97,6 +118,7 @@ const fetchBusinessProfile = async (req, res) => {
   }
 };
 
+// ======================= UPDATE PROFILES ==========================
 const updateIndividualProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -137,8 +159,9 @@ const updateBusinessProfile = async (req, res) => {
   }
 };
 
+// ======================= SETTINGS & DELETION ==========================
 const changePassword = async (req, res) => {
-  try{
+  try {
     const { password } = req.body;
     const userId = req.user.id;
 
@@ -152,17 +175,16 @@ const changePassword = async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      message: "New password confirmed. Password changed!",
+      message: "Password changed successfully.",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error updating tax reminder preference.",
+      message: "Error changing password.",
       error: error.message,
     });
   }
-}; 
-
+};
 
 const updateReminderPreference = async (req, res) => {
   try {
@@ -179,7 +201,9 @@ const updateReminderPreference = async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      message: `Tax reminder preference updated to ${tax_reminder ? "ON" : "OFF"}.`,
+      message: `Tax reminder preference updated to ${
+        tax_reminder ? "ON" : "OFF"
+      }.`,
     });
   } catch (error) {
     res.status(500).json({
@@ -192,24 +216,35 @@ const updateReminderPreference = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    deleted = await deleteUserProfile (req.user.id);
+    const deleted = await deleteUserProfile(req.user.id);
     if (!deleted) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found.",
       });
     }
     res.status(200).json({
       success: true,
-      message: "User deleted successfully"
+      message: "User deleted successfully.",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error deleting user",
-      error: error.message
-    })
+      message: "Error deleting user.",
+      error: error.message,
+    });
   }
-}
+};
 
-export { registerUser, loginUser, fetchUserProfile, fetchBusinessProfile, updateBusinessProfile, updateIndividualProfile, updateReminderPreference, changePassword, deleteUser };
+// ======================= EXPORTS ==========================
+export {
+  registerUser,
+  loginUser,
+  fetchUserProfile,
+  fetchBusinessProfile,
+  updateBusinessProfile,
+  updateIndividualProfile,
+  updateReminderPreference,
+  changePassword,
+  deleteUser
+};

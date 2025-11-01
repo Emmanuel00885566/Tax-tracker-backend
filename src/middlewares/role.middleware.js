@@ -1,12 +1,20 @@
+// src/middlewares/role.middleware.js
+
+// This middleware checks if the user’s role (individual or business) matches the allowed roles
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!allowedRoles.includes(req.user.role)) {
+    const user = req.user;
+
+    if (!user || !user.role) {
+      return res.status(401).json({ message: "Unauthorized: user role missing" });
+    }
+
+    if (!allowedRoles.includes(user.role)) {
       return res.status(403).json({
-        message: "Access denied: insufficient privileges"
+        message: "Access denied: this action is not allowed for your account type",
       });
     }
+
     next();
   };
 };
-
-// It will be deleted

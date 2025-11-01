@@ -1,7 +1,7 @@
 import { sendEmailOTP, verifyEmailOTP } from "../services/otp.service.js";
 import { User } from "../models/index.js";
 
-// Sending OTP after registration or manually
+// ======================= SEND OTP ==========================
 export const sendOtpController = async (req, res) => {
   try {
     const { email } = req.body;
@@ -10,12 +10,11 @@ export const sendOtpController = async (req, res) => {
     if (!user)
       return res.status(404).json({ success: false, message: "User not found." });
 
-    const result = await sendEmailOTP(user);
+    await sendEmailOTP(user);
 
     res.status(200).json({
       success: true,
-      message: "OTP sent successfully.",
-      data: result,
+      message: "OTP sent successfully to email.",
     });
   } catch (error) {
     res.status(500).json({
@@ -26,17 +25,19 @@ export const sendOtpController = async (req, res) => {
   }
 };
 
-// OTP verification
+// ======================= VERIFY OTP ==========================
 export const verifyOtpController = async (req, res) => {
   try {
     const { email, otp } = req.body;
-
     const verifiedUser = await verifyEmailOTP(email, otp);
 
     res.status(200).json({
       success: true,
       message: "Email verified successfully.",
-      data: { email: verifiedUser.email, isVerified: verifiedUser.isVerified },
+      data: {
+        email: verifiedUser.email,
+        isVerified: verifiedUser.isVerified,
+      },
     });
   } catch (error) {
     res.status(400).json({

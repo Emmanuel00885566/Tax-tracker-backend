@@ -82,7 +82,7 @@ const handleValidationErrors = (req, res, next) => {
 
 
 export const registerValidation = [
-  body("name").notEmpty().withMessage("Name is required"),
+  body("fullname").notEmpty().withMessage("Full Name is required"),
   body("email").isEmail().withMessage("Valid email is required"),
   body("password")
     .isLength({ min: 6 })
