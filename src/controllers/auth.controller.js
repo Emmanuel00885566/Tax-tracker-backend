@@ -1,6 +1,6 @@
 import { createUser, userLogin, getUserProfile, getBusinessProfile, updateUserProf, updateBusinessProf, updateRemPreference, changePass, deleteUserProfile } from "../services/auth.service.js";
 //import { IndividualProfile } from "../models/individualProfile.js";
-import BusinessProfile from "../models/businessProfile.js";
+import BusinessProfile from "../models/business.profile.js";
 
 // I'll have to create admin profile after all (not priority)
 // Currently: business is required to enter fullname. Not meant to be so

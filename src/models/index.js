@@ -1,10 +1,10 @@
-import { sequelize } from "../config/db.js";
+import sequelize  from "../config/db.js";
 import { DataTypes } from "sequelize";
 import User from "./user.model.js";
 import Transaction from "./transaction.model.js";
 import TaxRecord from "./taxRecord.model.js";
 import NotificationModel from "./notification.model.js";
-import BusinessProfile from "./businessProfile.js";
+import BusinessProfile from "./business.profile.js";
 
 const Notification = NotificationModel(sequelize, DataTypes);
 

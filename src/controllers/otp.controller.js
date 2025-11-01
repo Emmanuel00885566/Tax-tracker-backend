@@ -1,4 +1,4 @@
-import { sendEmailOTP, verifyEmailOTP } from "../services/otpService.js";
+import { sendEmailOTP, verifyEmailOTP } from "../services/otp.service.js";
 import { User } from "../models/index.js";
 
 // Sending OTP after registration or manually
