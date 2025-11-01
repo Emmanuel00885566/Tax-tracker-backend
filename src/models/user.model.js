@@ -29,7 +29,7 @@ const User = sequelize.define(
         },
         beforeUpdate: async (user) => {
             if (user.changed("username")) {
-                user.username = user.usernme.toLowerCase();
+                user.username = user.username.toLowerCase();
             }
             if (user.changed("email")) {
                 user.email = user.email.toLowerCase();

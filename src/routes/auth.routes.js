@@ -15,8 +15,8 @@ router.post("/choose_account", authorizeRoles("individual", "business"), (req, r
   res.status(200).json({ message: "Not implemented yet" });
 });
 
-router.post("/sign_up/individual", authRateLimiter, individualAccountType, authorizeRoles("individual"), registerValidation, registerUser); // Works
-router.post("/sign_up/business", authRateLimiter, businessAccountType, authorizeRoles("business"), registerValidation, registerUser); // Works
+router.post("/sign_up/individual", authRateLimiter, individualAccountType, registerValidation, registerUser); // Works
+router.post("/sign_up/business", authRateLimiter, businessAccountType, registerValidation, registerUser); // Works
 // Register = Sign up 
 
 router.post("/admin/register", authorizeRoles("admin")); // will have its own token logic as well - createUserAsAdmin
