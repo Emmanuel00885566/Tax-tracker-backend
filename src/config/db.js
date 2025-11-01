@@ -9,10 +9,11 @@ const sequelize = new Sequelize(
   process.env.DB_PASS,
   {
     host: process.env.DB_HOST,
-    dialect: process.env.DIALECT, 
-    logging: false,   
+    dialect: "mysql",
+    logging: false, 
   }
 );
+
 
 export const connectDB = async () => {
   try {
@@ -24,5 +25,4 @@ export const connectDB = async () => {
   }
 };
 
-export { sequelize };
 export default sequelize;

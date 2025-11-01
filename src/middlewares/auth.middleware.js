@@ -2,28 +2,34 @@ import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
 import rateLimit from "express-rate-limit";
 
-// Rate limiter for login/register routes (max 5 requests per minute per IP)
+/* ==============================
+   RATE LIMITER (Protects Auth Routes)
+================================= */
 export const authRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5,
+  max: 5, // max requests per minute
   message: {
     success: false,
     message: "Too many attempts. Please try again after a minute.",
   },
-  standardHeaders: true,
+  standardHeaders: true, // Return rate limit info in the RateLimit-* headers
   legacyHeaders: false,
 });
 
-// Helper function to extract Bearer token
-const getToken = (req) => {
+/* ==============================
+   TOKEN HANDLER
+================================= */
+const extractToken = (req) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
   return authHeader.split(" ")[1];
 };
 
-// Verify JWT token middleware
+/* ==============================
+   VERIFY JWT TOKEN
+================================= */
 export const verifyToken = (req, res, next) => {
-  const token = getToken(req);
+  const token = extractToken(req);
   if (!token) {
     return res.status(401).json({
       success: false,
@@ -36,57 +42,60 @@ export const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    const msg =
+    const message =
       err.name === "TokenExpiredError"
         ? "Token has expired. Please log in again."
         : "Invalid token.";
-    res.status(403).json({ success: false, message: msg });
+    return res.status(403).json({ success: false, message });
   }
 };
 
-// Validation middleware for registration
+/* ==============================
+   ROLE AUTHORIZATION
+================================= */
+export const authorizeRoles = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Insufficient permissions.",
+      });
+    }
+    next();
+  };
+};
+
+/* ==============================
+   VALIDATION HELPERS
+================================= */
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+
 export const registerValidation = [
-  body("fullname").notEmpty().withMessage("Name is required"), // changed name to fullname
+  body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Valid email is required"),
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-  body("confirm_password")
-    .notEmpty()
-    .withMessage("Please confirm your password")
-    .custom((value, { req }) => value === req.body.password)
-    .withMessage("Passwords do not match!"),
-  body("account_type") // changed role to account_type here because of change made to authController
-    .notEmpty()
-    .withMessage("Role is required")
-    .isIn(["individual", "business"])
-    .withMessage("Role must be either individual or business"),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: errors.array(),
-      });
-    }
-    next();
-  },
-]; // There is no confirm password
+  body("type")
+    .optional()
+    .isIn(["individual", "company", "admin"])
+    .withMessage("Type must be either 'individual', 'company', or 'admin'"),
+  handleValidationErrors,
+];
 
-// Validation middleware for login
 export const loginValidation = [
   body("email").isEmail().withMessage("Valid email is required"),
   body("password").notEmpty().withMessage("Password is required"),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: errors.array(),
-      });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];

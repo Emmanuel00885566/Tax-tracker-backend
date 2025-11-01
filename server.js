@@ -1,12 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
+import sequelize, { connectDB } from "./src/config/db.js";
 import taxRoutes from "./src/routes/tax.routes.js";
-import { sequelize } from "./src/models/index.js";
+import authRoutes from "./src/routes/auth.routes.js";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(helmet());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.json({
@@ -15,13 +21,15 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/tax", taxRoutes);
 
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await connectDB();
+    await sequelize.sync(); 
     console.log("✅ Models synchronized with database.");
 
     app.listen(PORT, () =>
