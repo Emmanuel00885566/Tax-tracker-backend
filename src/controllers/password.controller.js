@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { User } from "../models/index.js";
+import dotenv from "dotenv";
+import bcrypt from "bcrypt";
+
+dotenv.config();
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -52,6 +56,43 @@ export const forgotPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to send password reset email.",
+      error: error.message,
+    });
+  }
+};
+
+export const resetPasswordWithToken = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+
+    if (!password || !confirmPassword)
+      return res.status(400).json({ message: "Both password and confirmPassword are required." });
+
+    if (password !== confirmPassword)
+      return res.status(400).json({ message: "Passwords do not match." });
+
+    // Verify token validity
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findByPk(decoded.id);
+    if (!user)
+      return res.status(404).json({ success: false, message: "User not found." });
+
+    user.password = password;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully. You can now log in.",
+    });
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(400).json({ message: "Reset link expired. Please request a new one." });
+    }
+    res.status(500).json({
+      success: false,
+      message: "Password reset failed.",
       error: error.message,
     });
   }

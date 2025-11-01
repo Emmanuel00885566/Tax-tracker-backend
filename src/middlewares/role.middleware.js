@@ -8,3 +8,5 @@ export const authorizeRoles = (...allowedRoles) => {
     next();
   };
 };
+
+// It will be deleted

@@ -40,3 +40,5 @@ const loginValidator = [
 ];
 
 export { registrationValidator, loginValidator };
+
+// Will be deleted
