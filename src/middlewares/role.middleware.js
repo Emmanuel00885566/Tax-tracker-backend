@@ -1,6 +1,3 @@
-// src/middlewares/role.middleware.js
-
-// This middleware checks if the user’s role (individual or business) matches the allowed roles
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     const user = req.user;

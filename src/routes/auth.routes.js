@@ -10,16 +10,19 @@ import {
   changePassword,
   deleteUser
 } from "../controllers/auth.controller.js";
+
 import {
   authRateLimiter,
   verifyToken,
   registerValidation,
-  loginValidation
+  loginValidation,
+  individualAccountType,
+  businessAccountType
 } from "../middlewares/auth.middleware.js";
+
 import { authorizeRoles } from "../middlewares/role.middleware.js";
 import { forgotPassword, resetPasswordWithToken } from "../controllers/password.controller.js";
 import { sendOtpController, verifyOtpController } from "../controllers/otp.controller.js";
-import { individualAccountType, businessAccountType } from "../middlewares/auth.2.middleware.js";
 
 const router = express.Router();
 

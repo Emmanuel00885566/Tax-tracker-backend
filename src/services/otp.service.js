@@ -11,14 +11,13 @@ export const sendEmailOTP = async (user) => {
   }
 
   const otp = generateOTP();
-  const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  const expiry = new Date(Date.now() + 10 * 60 * 1000); 
 
   // Save OTP and expiry to user
   user.otpCode = otp;
   user.otpExpiresAt = expiry;
   await user.save();
 
-  // Configure transporter (use environment variables in production)
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -39,7 +38,6 @@ export const sendEmailOTP = async (user) => {
   return { email: user.email, expiresAt: expiry };
 };
 
-// Verify OTP
 export const verifyEmailOTP = async (email, otp) => {
   const user = await User.findOne({ where: { email } });
 
@@ -49,7 +47,6 @@ export const verifyEmailOTP = async (email, otp) => {
   if (user.otpExpiresAt < new Date()) throw new Error("OTP expired.");
   if (user.otpCode !== otp) throw new Error("Invalid OTP.");
 
-  // Mark verified
   user.isVerified = true;
   user.otpCode = null;
   user.otpExpiresAt = null;

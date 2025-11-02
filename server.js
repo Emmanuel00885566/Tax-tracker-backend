@@ -5,6 +5,7 @@ import cors from "cors";
 import sequelize, { connectDB } from "./src/config/db.js";
 import taxRoutes from "./src/routes/tax.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
+import transactionRoutes from "./src/routes/transaction.routes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tax", taxRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 const PORT = process.env.PORT || 5000;
 

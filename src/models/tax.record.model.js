@@ -20,10 +20,10 @@ const TaxRecord = sequelize.define(
       onDelete: "CASCADE",
     },
     tax_type: {
-      type: DataTypes.ENUM("CIT", "PIT"),
+      type: DataTypes.ENUM("PIT", "CIT"),
       allowNull: false,
     },
-    taxable_amount: {
+    taxable_income: {
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
     },
@@ -31,13 +31,33 @@ const TaxRecord = sequelize.define(
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
     },
-    tax_year: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    period_start: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
     },
-    status: {
-      type: DataTypes.ENUM("pending", "paid", "overdue"),
-      defaultValue: "pending",
+    period_end: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+
+    meta: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+
+    paid_status: {
+      type: DataTypes.ENUM("unpaid", "paid"),
+      allowNull: false,
+      defaultValue: "unpaid",
+    },
+    paid_on: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    paid_amount: {
+      type: DataTypes.DECIMAL(15, 2),
+      allowNull: true,
+      defaultValue: 0.0,
     },
   },
   {

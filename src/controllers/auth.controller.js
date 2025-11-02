@@ -10,36 +10,40 @@ import {
   deleteUserProfile
 } from "../services/auth.service.js";
 
-import { sendEmailOTP } from "../services/otp.service.js"; // ✅ Added import
+import { sendEmailOTP } from "../services/otp.service.js"; 
 import BusinessProfile from "../models/business.profile.js";
 
 // ======================= REGISTER ==========================
 async function registerUser(req, res) {
   try {
-    const {
-      fullname,
-      email,
-      password,
-      account_type,
-      tax_identification_number,
-      annualIncomeRange,
-      tax_reminder = true,
-      businessName,
-      businessType
-    } = req.body;
+    // inside registerUser
+const {
+  fullname,
+  email,
+  password,
+  account_type, // from UI
+  type,         // possible alternative name
+  role: roleFromBody, // possible alternative name
+  tax_identification_number,
+  annualIncomeRange,
+  tax_reminder = true,
+  businessName,
+  businessType
+} = req.body;
 
-    // ✅ Create user
-    const newUser = await createUser({
-      username: fullname?.trim() || email.split("@")[0],
-      email,
-      password,
-      role: account_type,
-      tin: tax_identification_number || null,
-      annualIncomeRange,
-      tax_reminder,
-    });
+const role = account_type || type || roleFromBody || "individual";
 
-    // ✅ If business account, create business profile
+const newUser = await createUser({
+  username: fullname?.trim() || email.split("@")[0],
+  email,
+  password,
+  role, 
+  tin: tax_identification_number || null,
+  annualIncomeRange,
+  tax_reminder,
+});
+
+
     if (account_type === "business") {
       await BusinessProfile.create({
         userId: newUser.id,
@@ -48,7 +52,6 @@ async function registerUser(req, res) {
       });
     }
 
-    // ✅ Send OTP for email verification
     await sendEmailOTP(newUser);
 
     res.status(201).json({

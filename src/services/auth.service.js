@@ -1,4 +1,4 @@
-import { User, BusinessProfile } from "../models/index.js";
+import { User } from "../models/index.js";
 import generateToken from "../utils/generate.token.js";
 
 /* ---------------------------------
@@ -12,8 +12,7 @@ export async function createUser(userData) {
   if (existingUsername) throw new Error("Username already exists");
 
   const newUser = await User.create(userData);
-return newUser; // return the full Sequelize model instance
-    // token,
+return newUser; 
   }
 
 /* ---------------------------------
@@ -26,13 +25,14 @@ export async function userLogin({ email, password }) {
   const isPasswordValid = await user.verifyPassword(password);
   if (!isPasswordValid) throw new Error("Login failed. Incorrect password.");
 
-  const token = generateToken({ id: user.id });
+  const token = generateToken({ id: user.id, role: user.role, email: user.email });
 
   return {
     ...user.toJSON(),
     token,
   };
 }
+
 
 /* ---------------------------------
    User Profile - Individual

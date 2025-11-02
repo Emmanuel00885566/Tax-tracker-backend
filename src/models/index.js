@@ -1,43 +1,17 @@
-import sequelize  from "../config/db.js";
-import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 import User from "./user.model.js";
-import Transaction from "./transaction.model.js";
-import TaxRecord from "./taxRecord.model.js";
-import NotificationModel from "./notification.model.js";
-import BusinessProfile from "./business.profile.js";
+// import other models later, e.g. Income, Expense, TaxRecord, etc.
 
-const Notification = NotificationModel(sequelize, DataTypes);
+const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: true });
+    console.log("✅ Database connected successfully");
+  } catch (error) {
+    console.error("❌ Database connection error:", error.message);
+  }
+};
 
-User.hasMany(Transaction, {
-  foreignKey: "user_id",
-  as: "transactions",
-  onDelete: "CASCADE",
-});
-Transaction.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
-});
+connectDB();
 
-User.hasMany(TaxRecord, {
-  foreignKey: "user_id",
-  as: "taxRecords",
-  onDelete: "CASCADE",
-});
-TaxRecord.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
-});
-
-User.hasOne(BusinessProfile, { 
-  foreignKey: "userId", 
-  onDelete: "CASCADE" });
-BusinessProfile.belongsTo(User, { 
-  foreignKey: "userId" });
-
-sequelize
-  .sync({ alter: true }) 
-  .then(() => console.log("✅ Tables dropped and re-created successfully"))
-  .catch((err) => console.error("❌ Error syncing models:", err.message));
-
-export { sequelize, User, Transaction, TaxRecord, Notification, BusinessProfile };
-//export { sequelize, User, BusinessProfile };
+export { sequelize, User };
