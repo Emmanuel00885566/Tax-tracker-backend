@@ -6,9 +6,6 @@ import { forgotPassword, resetPasswordWithToken } from "../controllers/password.
 import { sendOtpController, verifyOtpController } from "../controllers/otp.controller.js";
 import { individualAccountType, businessAccountType } from "../middlewares/auth.2.middleware.js";
 
-// authorizeRoles("admin", "manager") for multi-roles or can use just one
-// After verifyToken will be the role based access
-
 const router = express.Router();
 
 router.post("/choose_account", authorizeRoles("individual", "business"), (req, res) => {
@@ -19,33 +16,39 @@ router.post("/sign_up/individual", authRateLimiter, individualAccountType, autho
 router.post("/sign_up/business", authRateLimiter, businessAccountType, authorizeRoles("business"), registerValidation, registerUser); // Works
 // Register = Sign up 
 
+//ADMIN
 router.post("/admin/register", authorizeRoles("admin")); // will have its own token logic as well - createUserAsAdmin
+//token gen here as well
+router.get("/admin/dashboard", verifyToken, authorizeRoles("admin"), /*adminDashboard*/);
+router.get("/admin/users", verifyToken, authorizeRoles("admin"), /*getAllUsers*/);
+router.delete("/admin/users/:id", verifyToken, authorizeRoles("admin"), async (req, res) => {
+  const { id } = req.params;
+  await User.destroy({ where: { id } });
+  res.json({ success: true, message: `User with ID ${id} has been deleted.` });
+}); // refactor
 
-router.post("/send_otp", sendOtpController);
-router.post("/verify_otp", verifyOtpController);
-// I will decide on roles
+router.post("/send_otp", authorizeRoles("individual", "business"), sendOtpController);
+router.post("/verify_otp", authorizeRoles("individual", "business"), verifyOtpController);
 
 router.post("/sign_in", authRateLimiter, loginValidation, loginUser); // Works
 // Login = sign_in
 
 router.put("/reset_password/:token", verifyToken, authorizeRoles("individual", "business"), resetPasswordWithToken); // Works
-router.post("/forgot_password", forgotPassword); // Works
-router.patch("/users/change_password", verifyToken, changePassword);
+router.post("/forgot_password", authorizeRoles("individual", "business"), forgotPassword); // Works
+router.patch("/users/change_password", verifyToken, authorizeRoles("individual", "business"), changePassword);
 
-
-
-router.put("/preferences/reminders", verifyToken, updateReminderPreference); // Works
+router.put("/preferences/reminders", verifyToken, authorizeRoles("individual", "business"), updateReminderPreference); // Works
 
 router.get("/individual/profile", verifyToken, authorizeRoles("individual"), fetchUserProfile); //Works
 router.get("/business/profile", verifyToken, authorizeRoles("business"), fetchBusinessProfile); //Works
 
 
-router.patch("/business/profile", verifyToken, updateBusinessProfile);
-router.patch("/individual/profile", verifyToken, updateIndividualProfile);
+router.patch("/business/profile", verifyToken, authorizeRoles("business"), updateBusinessProfile);
+router.patch("/individual/profile", verifyToken, authorizeRoles("individual"), updateIndividualProfile);
 
 router.delete("/profile", verifyToken, deleteUser); // should have some validation for it
 
-// GET user welcome
+// Do I need routes for the onboarding/splash screens as well
 // I might have to make provisions for admin as well
 
 export default router;

@@ -16,8 +16,9 @@ const User = sequelize.define(
     isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
     otpCode: { type: DataTypes.STRING, allowNull: true },
     otpExpiresAt: { type: DataTypes.DATE, allowNull: true},
+    deletedAt: { type: DataTypes.DATE },
 },
-{ /*tableName: "Users",*/ timestamps: true,
+{ tableName: "Users", paranoid: true, timestamps: true,
     hooks: {
         beforeCreate: async (user) => {
             user.username = user.username.toLowerCase();
