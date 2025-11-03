@@ -1,9 +1,7 @@
 import { User } from "../models/index.js";
 import generateToken from "../utils/generate.token.js";
 
-/* ---------------------------------
-   Create New User (Registration)
---------------------------------- */
+// User Registration
 export async function createUser(userData) {
   const existingEmail = await User.findOne({ where: { email: userData.email } });
   if (existingEmail) throw new Error("Email already exists");
@@ -15,9 +13,7 @@ export async function createUser(userData) {
 return newUser; 
   }
 
-/* ---------------------------------
-   Login User
---------------------------------- */
+// User Login
 export async function userLogin({ email, password }) {
   const user = await User.findOne({ where: { email } });
   if (!user) throw new Error("Login failed. Check your email and try again.");
@@ -34,9 +30,7 @@ export async function userLogin({ email, password }) {
 }
 
 
-/* ---------------------------------
-   User Profile - Individual
---------------------------------- */
+// User Profile - Individual
 export async function getUserProfile(user) {
   const foundUser = await User.findByPk(user.id, {
     attributes: ["username", "role", "annualIncomeRange", "tin", "tax_reminder", "email"],
@@ -52,9 +46,7 @@ export async function getUserProfile(user) {
   };
 }
 
-/* ---------------------------------
-   User Profile - Business
---------------------------------- */
+// User Profile - Business
 export async function getBusinessProfile(user) {
   const foundBusiness = await User.findByPk(user.id, {
     attributes: ["role", "annualIncomeRange", "tin", "tax_reminder"],
@@ -76,9 +68,7 @@ export async function getBusinessProfile(user) {
   };
 }
 
-/* ---------------------------------
-   Update Individual Profile
---------------------------------- */
+// Update Individual Profile
 export async function updateUserProf(userId, updates) {
   const allowed = ["username", "annualIncomeRange", "tin", "tax_reminder"];
   const filteredUpdates = Object.fromEntries(Object.entries(updates).filter(([key]) => allowed.includes(key)));
@@ -99,9 +89,7 @@ export async function updateUserProf(userId, updates) {
   };
 }
 
-/* ---------------------------------
-   Update Business Profile
---------------------------------- */
+// Update Business Profile
 export async function updateBusinessProf(userId, updates) {
   const allowedUserFields = ["annualIncomeRange", "tin", "tax_reminder"];
   const allowedBusinessFields = ["businessName", "businessType"];
@@ -128,26 +116,21 @@ export async function updateBusinessProf(userId, updates) {
   };
 }
 
-/* ---------------------------------
-   Update Tax Reminder Preference
---------------------------------- */
+// Update Tax Reminder Preference
 export async function updateRemPreference(userId, tax_reminder) {
   const [updated] = await User.update({ tax_reminder }, { where: { id: userId } });
   return updated;
 }
 
-/* ---------------------------------
-   Change Password
---------------------------------- */
+  //  Change Password
 export async function changePass(userId, password) {
   await User.update({ password }, { where: { id: userId }, individualHooks: true });
   const updatedUser = await User.findByPk(userId, { attributes: { exclude: ["password"] } });
   return updatedUser;
 }
 
-/* ---------------------------------
-   Delete User Profile
---------------------------------- */
+
+  //  Delete User Profile
 export async function deleteUserProfile(userId) {
   return await User.destroy({ where: { id: userId } });
 }

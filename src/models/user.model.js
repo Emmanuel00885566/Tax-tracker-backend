@@ -32,7 +32,7 @@ const User = sequelize.define(
   {
     timestamps: true,
     indexes: [
-      { unique: true, fields: ["email"] }, // single unique index for email only
+      { unique: true, fields: ["email"] }, 
     ],
     hooks: {
       beforeCreate: async (user) => {
