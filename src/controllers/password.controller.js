@@ -16,17 +16,14 @@ export const forgotPassword = async (req, res) => {
     if (!user)
       return res.status(404).json({ success: false, message: "No user found with this email." });
 
-    // Create a reset token (expires in 15 minutes)
     const resetToken = jwt.sign(
       { id: user.id },
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
 
-    // Reset link (adjust to your frontend domain)
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-    // Send email using Nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -72,7 +69,6 @@ export const resetPasswordWithToken = async (req, res) => {
     if (password !== confirmPassword)
       return res.status(400).json({ message: "Passwords do not match." });
 
-    // Verify token validity
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findByPk(decoded.id);

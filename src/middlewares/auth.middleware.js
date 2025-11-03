@@ -7,12 +7,12 @@ import rateLimit from "express-rate-limit";
 ================================= */
 export const authRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // max requests per minute
+  max: 5, 
   message: {
     success: false,
     message: "Too many attempts. Please try again after a minute.",
   },
-  standardHeaders: true, // Return rate limit info in the RateLimit-* headers
+  standardHeaders: true,
   legacyHeaders: false,
 });
 
@@ -24,6 +24,8 @@ const extractToken = (req) => {
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
   return authHeader.split(" ")[1];
 };
+
+
 
 /* ==============================
    VERIFY JWT TOKEN
@@ -80,17 +82,19 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-
+/* ==============================
+   REGISTER & LOGIN VALIDATION
+================================= */
 export const registerValidation = [
-  body("name").notEmpty().withMessage("Name is required"),
+  body("fullname").notEmpty().withMessage("Full Name is required"),
   body("email").isEmail().withMessage("Valid email is required"),
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-  body("type")
-    .optional()
-    .isIn(["individual", "company", "admin"])
-    .withMessage("Type must be either 'individual', 'company', or 'admin'"),
+  body("account_type")
+  .optional()
+  .isIn(["individual", "company", "admin"])
+  .withMessage("Type must be either 'individual', 'company', or 'admin'"),
   handleValidationErrors,
 ];
 
@@ -99,3 +103,16 @@ export const loginValidation = [
   body("password").notEmpty().withMessage("Password is required"),
   handleValidationErrors,
 ];
+
+/* ==============================
+   ACCOUNT TYPE MIDDLEWARES
+================================= */
+export const individualAccountType = (req, res, next) => {
+  req.body.type = "individual";
+  next();
+};
+
+export const businessAccountType = (req, res, next) => {
+  req.body.type = "company";
+  next();
+};
