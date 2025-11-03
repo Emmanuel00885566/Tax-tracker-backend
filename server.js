@@ -31,7 +31,7 @@ app.use("/api/tax", taxRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/income-expense", incomeExpenseRoutes);
 app.use('/api/reminders', reminderRoutes);
-app.use('/report', reportRoutes);
+app.use('/api/report', reportRoutes);
 
 const PORT = process.env.PORT || 5000;
 
