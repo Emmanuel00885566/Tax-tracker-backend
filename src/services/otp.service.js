@@ -1,10 +1,9 @@
 import { User } from "../models/index.js";
 import nodemailer from "nodemailer";
 
-// Generate 6-digit OTP
+
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-// Send OTP to user's email
 export const sendEmailOTP = async (user) => {
   if (user.isVerified) {
     throw new Error("User is already verified.");
@@ -13,7 +12,6 @@ export const sendEmailOTP = async (user) => {
   const otp = generateOTP();
   const expiry = new Date(Date.now() + 10 * 60 * 1000); 
 
-  // Save OTP and expiry to user
   user.otpCode = otp;
   user.otpExpiresAt = expiry;
   await user.save();

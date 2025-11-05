@@ -2,11 +2,9 @@ import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
 import rateLimit from "express-rate-limit";
 
-/* ==============================
-   RATE LIMITER (Protects Auth Routes)
-================================= */
+// RATE LIMITER FOR AUTH ROUTES
 export const authRateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000, 
   max: 5, 
   message: {
     success: false,
@@ -16,9 +14,7 @@ export const authRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-/* ==============================
-   TOKEN HANDLER
-================================= */
+// TOKEN EXTRACTION HELPER
 const extractToken = (req) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
@@ -27,9 +23,7 @@ const extractToken = (req) => {
 
 
 
-/* ==============================
-   VERIFY JWT TOKEN
-================================= */
+// TOKEN VERIFICATION MIDDLEWARE
 export const verifyToken = (req, res, next) => {
   const token = extractToken(req);
   if (!token) {
@@ -52,9 +46,7 @@ export const verifyToken = (req, res, next) => {
   }
 };
 
-/* ==============================
-   ROLE AUTHORIZATION
-================================= */
+// ROLE AUTHORIZATION MIDDLEWARE
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
@@ -67,9 +59,7 @@ export const authorizeRoles = (...allowedRoles) => {
   };
 };
 
-/* ==============================
-   VALIDATION HELPERS
-================================= */
+// VALIDATION HANDLER
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -82,9 +72,7 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-/* ==============================
-   REGISTER & LOGIN VALIDATION
-================================= */
+// Registration and Login Validations
 export const registerValidation = [
   body("fullname").notEmpty().withMessage("Full Name is required"),
   body("email").isEmail().withMessage("Valid email is required"),
@@ -104,9 +92,7 @@ export const loginValidation = [
   handleValidationErrors,
 ];
 
-/* ==============================
-   ACCOUNT TYPE MIDDLEWARES
-================================= */
+// Account Type Middlewares
 export const individualAccountType = (req, res, next) => {
   req.body.type = "individual";
   next();

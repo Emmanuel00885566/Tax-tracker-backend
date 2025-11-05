@@ -6,6 +6,10 @@ import sequelize, { connectDB } from "./src/config/db.js";
 import taxRoutes from "./src/routes/tax.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import transactionRoutes from "./src/routes/transaction.routes.js";
+import incomeExpenseRoutes from "./src/routes/income.expense.routes.js";
+import reminderRoutes from './src/routes/reminder.routes.js';
+import './src/jobs/reminder.cron.js';
+import reportRoutes from './src/routes/report.routes.js';
 
 dotenv.config();
 
@@ -25,6 +29,9 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/tax", taxRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/income-expense", incomeExpenseRoutes);
+app.use('/api/reminders', reminderRoutes);
+app.use('/api/report', reportRoutes);
 
 const PORT = process.env.PORT || 5000;
 

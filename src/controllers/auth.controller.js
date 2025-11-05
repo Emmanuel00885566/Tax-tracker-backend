@@ -16,14 +16,13 @@ import BusinessProfile from "../models/business.profile.js";
 // ======================= REGISTER ==========================
 async function registerUser(req, res) {
   try {
-    // inside registerUser
 const {
   fullname,
   email,
   password,
-  account_type, // from UI
-  type,         // possible alternative name
-  role: roleFromBody, // possible alternative name
+  account_type,
+  type,
+  role: roleFromBody,
   tax_identification_number,
   annualIncomeRange,
   tax_reminder = true,
