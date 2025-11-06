@@ -39,7 +39,7 @@ const IncomeExpense = sequelize.define("IncomeExpense", {
   },
 }, {
   tableName: "income_expenses",
-  timestamps: true, // adds createdAt and updatedAt
+  timestamps: true,
 });
 
 export default IncomeExpense;

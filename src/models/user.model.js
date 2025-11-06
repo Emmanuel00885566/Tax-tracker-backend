@@ -6,8 +6,12 @@ const User = sequelize.define(
   "User",
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    username: { type: DataTypes.STRING, allowNull: false },
-    email: { type: DataTypes.STRING, allowNull: false, validate: { isEmail: true } },
+    email: { 
+      type: DataTypes.STRING, 
+      allowNull: false, 
+      unique: true, 
+      validate: { isEmail: true } 
+    },
     password: { type: DataTypes.STRING, allowNull: false },
     role: {
       type: DataTypes.ENUM("individual", "business", "admin"),
@@ -31,12 +35,8 @@ const User = sequelize.define(
   },
   {
     timestamps: true,
-    indexes: [
-      { unique: true, fields: ["email"] }, 
-    ],
     hooks: {
       beforeCreate: async (user) => {
-        user.username = user.username.toLowerCase();
         user.email = user.email.toLowerCase();
         if (user.password) {
           const salt = await bcrypt.genSalt(10);
@@ -44,7 +44,6 @@ const User = sequelize.define(
         }
       },
       beforeUpdate: async (user) => {
-        if (user.changed("username")) user.username = user.username.toLowerCase();
         if (user.changed("email")) user.email = user.email.toLowerCase();
         if (user.changed("password")) {
           const salt = await bcrypt.genSalt(10);

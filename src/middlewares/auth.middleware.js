@@ -81,8 +81,8 @@ export const registerValidation = [
     .withMessage("Password must be at least 6 characters long"),
   body("account_type")
   .optional()
-  .isIn(["individual", "company", "admin"])
-  .withMessage("Type must be either 'individual', 'company', or 'admin'"),
+  .isIn(["individual", "business", "admin"])
+  .withMessage("Type must be either 'individual', 'business', or 'admin'"),
   handleValidationErrors,
 ];
 
@@ -99,6 +99,6 @@ export const individualAccountType = (req, res, next) => {
 };
 
 export const businessAccountType = (req, res, next) => {
-  req.body.type = "company";
+  req.body.type = "business";
   next();
 };

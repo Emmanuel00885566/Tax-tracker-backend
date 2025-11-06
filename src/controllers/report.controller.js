@@ -18,7 +18,7 @@ export async function download(req, res) {
     }
     return streamPDF(res, meta, summary);
   } catch (error) {
-    console.error('❌ Report generation error:', error);
+    console.error(' Report generation error:', error);
     return res.status(500).json({ message: 'Failed to generate report' });
   }
 }

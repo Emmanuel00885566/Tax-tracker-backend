@@ -7,10 +7,7 @@ import {
   getIncomeExpenseSummary
 } from "../services/income.expense.service.js";
 
-/**
- * Create a new income or expense record
- * POST /api/income-expense/:userId
- */
+// Create a new income or expense record
 export async function createIncomeExpenseController(req, res) {
   try {
     const { userId } = req.params;
@@ -19,6 +16,7 @@ export async function createIncomeExpenseController(req, res) {
     if (!payload.type || !["income", "expense"].includes(payload.type)) {
       return res.status(400).json({ success: false, error: "type is required and must be 'income' or 'expense'" });
     }
+
     if (payload.amount === undefined || isNaN(Number(payload.amount))) {
       return res.status(400).json({ success: false, error: "amount is required and must be a number" });
     }
@@ -29,15 +27,15 @@ export async function createIncomeExpenseController(req, res) {
       description: payload.description || null,
       category: payload.category || null,
       is_deductible: payload.is_deductible === true,
-      date: payload.date || new Date().toISOString().slice(0, 10), 
-      business_structure: payload.business_structure || null, 
+      date: payload.date || new Date().toISOString().slice(0, 10),
+      business_structure: payload.business_structure || null,
       period_start: payload.period_start || null,
       period_end: payload.period_end || null
     });
 
     return res.status(201).json({
       success: true,
-      message: "Income/Expense record created",
+      message: "Income/Expense record created successfully",
       data: record
     });
   } catch (err) {
@@ -46,11 +44,7 @@ export async function createIncomeExpenseController(req, res) {
   }
 }
 
-/**
- * Get list of income/expense records (with optional filters)
- * GET /api/income-expense/:userId
- * Query params: startDate, endDate, type (income|expense), category, limit, offset
- */
+// Get all income/expense records for a user
 export async function getIncomeExpensesController(req, res) {
   try {
     const { userId } = req.params;
@@ -76,14 +70,11 @@ export async function getIncomeExpensesController(req, res) {
   }
 }
 
-/**
- * Get single income/expense by id
- * GET /api/income-expense/:userId/:id
- */
+// Get single income/expense by id
 export async function getIncomeExpenseByIdController(req, res) {
   try {
-    const { userId, id } = req.params;
-    const record = await getIncomeExpenseById(userId, id);
+    const { id } = req.params;
+    const record = await getIncomeExpenseById(id);
 
     return res.status(200).json({
       success: true,
@@ -96,20 +87,17 @@ export async function getIncomeExpenseByIdController(req, res) {
   }
 }
 
-/**
- * Update a record
- * PUT /api/income-expense/:userId/:id
- */
+// Update a record
 export async function updateIncomeExpenseController(req, res) {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
     const updates = req.body || {};
 
     if (updates.amount !== undefined && isNaN(Number(updates.amount))) {
       return res.status(400).json({ success: false, error: "amount must be a number" });
     }
 
-    const updated = await updateIncomeExpense(userId, id, {
+    const updated = await updateIncomeExpense(id, {
       ...updates,
       amount: updates.amount !== undefined ? Number(updates.amount) : undefined,
       is_deductible: updates.is_deductible !== undefined ? !!updates.is_deductible : undefined
@@ -127,14 +115,11 @@ export async function updateIncomeExpenseController(req, res) {
   }
 }
 
-/**
- * Delete a record
- * DELETE /api/income-expense/:userId/:id
- */
+// Delete a record
 export async function deleteIncomeExpenseController(req, res) {
   try {
-    const { userId, id } = req.params;
-    await deleteIncomeExpense(userId, id);
+    const { id } = req.params;
+    await deleteIncomeExpense(id);
 
     return res.status(200).json({
       success: true,
@@ -147,12 +132,7 @@ export async function deleteIncomeExpenseController(req, res) {
   }
 }
 
-/**
- * Summary endpoint (optional, useful for PBT)
- * GET /api/income-expense/:userId/summary?startDate=...&endDate=...
- *
- * Returns totals: totalRevenue, totalDeductibleExpenses, totalNonDeductibleExpenses, pbt
- */
+// Get income/expense summary for a user
 export async function getIncomeExpenseSummaryController(req, res) {
   try {
     const { userId } = req.params;

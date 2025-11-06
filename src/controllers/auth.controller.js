@@ -16,40 +16,41 @@ import BusinessProfile from "../models/business.profile.js";
 // ======================= REGISTER ==========================
 async function registerUser(req, res) {
   try {
-const {
-  fullname,
-  email,
-  password,
-  account_type,
-  type,
-  role: roleFromBody,
-  tax_identification_number,
-  annualIncomeRange,
-  tax_reminder = true,
-  businessName,
-  businessType
-} = req.body;
+    const {
+      fullname,
+      email,
+      password,
+      account_type,
+      type,
+      role: roleFromBody,
+      tax_identification_number,
+      annualIncomeRange,
+      tax_reminder = true,
+      businessName,
+      businessType
+    } = req.body;
 
-const role = account_type || type || roleFromBody || "individual";
+    const role = account_type || type || roleFromBody || "individual";
 
-const newUser = await createUser({
-  username: fullname?.trim() || email.split("@")[0],
-  email,
-  password,
-  role, 
-  tin: tax_identification_number || null,
-  annualIncomeRange,
-  tax_reminder,
-});
+    const newUser = await createUser({
+      fullname: fullname?.trim(),
+      email,
+      password,
+      role,
+      tin: tax_identification_number || null,
+      annualIncomeRange,
+      tax_reminder,
+    });
 
-
-    if (account_type === "business") {
-      await BusinessProfile.create({
-        userId: newUser.id,
-        businessName,
-        businessType,
-      });
-    }
+    if (account_type === "business" || role === "business") {
+  await BusinessProfile.create({
+    userId: newUser.id,
+    businessName: businessName || fullname,
+    businessType: businessType || null,
+    taxIdentificationNumber: tax_identification_number || null,
+    taxRemindersEnabled: tax_reminder ?? true
+  });
+}
 
     await sendEmailOTP(newUser);
 
@@ -58,6 +59,7 @@ const newUser = await createUser({
       message: "User registration successful. Verification OTP sent to email.",
       data: newUser,
     });
+
   } catch (error) {
     res.status(400).json({
       success: false,
