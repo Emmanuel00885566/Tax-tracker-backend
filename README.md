@@ -66,34 +66,34 @@ It supports both **individual** and **business** accounts, includes OTP verifica
 ##  Folder Structure
 
 .
-├─ server.js
-├─ package.json
-├─ .env.example
-├─ src/
-│  ├─ config/
-│  │  └─ db.js
-│  ├─ controllers/
-│  │  ├─ auth.controller.js
-│  │  ├─ transaction.controller.js
-│  │  └─ tax.controller.js
-│  ├─ middlewares/
-│  │  └─ auth.middleware.js
-│  ├─ models/
-│  │  ├─ index.js
-│  │  ├─ user.model.js
-│  │  ├─ transaction.model.js
-│  │  └─ taxRecord.model.js
-│  ├─ routes/
-│  │  ├─ auth.routes.js
-│  │  ├─ transactions.routes.js
-│  │  └─ tax.routes.js
-│  ├─ services/
-│  │  ├─ auth.service.js
-│  │  ├─ transaction.service.js
-│  │  └─ tax.service.js
-│  └─ utils/
-│     └─ tax.utils.js
-└─ README.md
+├─ server.js  
+├─ package.json  
+├─ .env.example  
+├─ src/  
+│  ├─ config/  
+│  │  └─ db.js  
+│  ├─ controllers/  
+│  │  ├─ auth.controller.js  
+│  │  ├─ transaction.controller.js  
+│  │  └─ tax.controller.js  
+│  ├─ middlewares/  
+│  │  └─ auth.middleware.js  
+│  ├─ models/  
+│  │  ├─ index.js  
+│  │  ├─ user.model.js  
+│  │  ├─ transaction.model.js  
+│  │  └─ taxRecord.model.js  
+│  ├─ routes/  
+│  │  ├─ auth.routes.js  
+│  │  ├─ transactions.routes.js  
+│  │  └─ tax.routes.js  
+│  ├─ services/  
+│  │  ├─ auth.service.js  
+│  │  ├─ transaction.service.js  
+│  │  └─ tax.service.js  
+│  └─ utils/  
+│     └─ tax.utils.js  
+└─ README.md  
 
 ##  Installation & Setup
 
@@ -147,16 +147,16 @@ git push origin 	Push changes to GitHub
 
 Create a `.env` file in the project root and add:
 
-DB_NAME=database_name
-DB_USER=user
-DB_PASS=database_password
-DB_HOST=localhost
-DB_DIALECT=mysql
-PORT=5000
-JWT_SECRET=your_secret_key_here
-CLIENT_URL=http://localhost:5173
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
+DB_NAME=database_name  
+DB_USER=user  
+DB_PASS=database_password  
+DB_HOST=localhost  
+DB_DIALECT=mysql  
+PORT=5000  
+JWT_SECRET=your_secret_key_here  
+CLIENT_URL=http://localhost:5173  
+EMAIL_USER=your_email@gmail.com  
+EMAIL_PASS=your_app_password  
 
 ## API Endpoints
 
