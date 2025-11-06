@@ -134,6 +134,15 @@ Example Tax Response
   "status": "unpaid"
 }
 
+Common Commands
+
+Command	Description
+npm run dev	Run with Nodemon
+npm start	Run production server
+git pull	Fetch latest updates
+git push origin 	Push changes to GitHub
+```
+
 ## Environment variables
 
 Create a `.env` file in the project root and add:
@@ -227,32 +236,21 @@ EMAIL_PASS=your_app_password
 
 ---
 
-Common Commands
-
-Command	Description
-npm run dev	Run with Nodemon
-npm start	Run production server
-git pull	Fetch latest updates
-git push origin 	Push changes to GitHub
-
 ## How it Works (Not Yet Done)
 
 ##  Contributors
 
 | Name                   | Role                          |
 | ---------------------- | ----------------------------- |
-| **Adeboye Emmanuel**   | Team Lead / Backend Developer |
-| **Adediji Faith**      | Backend Developer             |
-| **Boboye Esther**      | Backend Developer             |
-| **Adodo Daniel**       | Backend Developer             |
-| **Echanny Idagu**      | Backend Developer             |
-| **KaryM**              | Backend Developer             |
+| Adeboye Emmanuel       | Team Lead / Backend Developer |
+| Adediji Faith          | Backend Developer             |
+| Boboye Esther          | Backend Developer             |
+| Adodo Daniel           | Backend Developer             |
+| Echanny Idagu          | Backend Developer             |
+| KaryM                  | Backend Developer             |
 
 Author
 🔗 GitHub Profile
 
 
  License
-
-
-
