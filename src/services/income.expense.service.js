@@ -6,7 +6,7 @@ export async function createIncomeExpense(userId, data) {
   return await IncomeExpense.create({ user_id: userId, ...data });
 }
 
-// Get all income/expense records with optional filters
+// Get all income/expense records (with optional filters)
 export async function getIncomeExpenses(userId, filters = {}) {
   const where = { user_id: userId };
 
@@ -25,15 +25,15 @@ export async function getIncomeExpenses(userId, filters = {}) {
 }
 
 // Get a single record by ID
-export async function getIncomeExpenseById(userId, id) {
-  const record = await IncomeExpense.findOne({ where: { id, user_id: userId } });
+export async function getIncomeExpenseById(id) {
+  const record = await IncomeExpense.findByPk(id);
   if (!record) throw new Error("Record not found");
   return record;
 }
 
 // Update a record
-export async function updateIncomeExpense(userId, id, updates) {
-  const record = await IncomeExpense.findOne({ where: { id, user_id: userId } });
+export async function updateIncomeExpense(id, updates) {
+  const record = await IncomeExpense.findByPk(id);
   if (!record) throw new Error("Record not found");
 
   await record.update(updates);
@@ -41,8 +41,8 @@ export async function updateIncomeExpense(userId, id, updates) {
 }
 
 // Delete a record
-export async function deleteIncomeExpense(userId, id) {
-  const record = await IncomeExpense.findOne({ where: { id, user_id: userId } });
+export async function deleteIncomeExpense(id) {
+  const record = await IncomeExpense.findByPk(id);
   if (!record) throw new Error("Record not found");
 
   await record.destroy();
@@ -64,11 +64,12 @@ export async function getIncomeExpenseSummary(userId, { startDate, endDate } = {
   let totalNonDeductibleExpenses = 0;
 
   for (const rec of records) {
+    const amount = parseFloat(rec.amount);
     if (rec.type === "income") {
-      totalRevenue += rec.amount;
+      totalRevenue += amount;
     } else if (rec.type === "expense") {
-      if (rec.is_deductible) totalDeductibleExpenses += rec.amount;
-      else totalNonDeductibleExpenses += rec.amount;
+      if (rec.is_deductible) totalDeductibleExpenses += amount;
+      else totalNonDeductibleExpenses += amount;
     }
   }
 

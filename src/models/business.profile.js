@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
-import sequelize   from "../config/db.js";
+import sequelize from "../config/db.js";
+import User from "./user.model.js"; 
 
 const BusinessProfile = sequelize.define("BusinessProfile", {
   id: {
@@ -11,12 +12,19 @@ const BusinessProfile = sequelize.define("BusinessProfile", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-    businessType: {
+  businessType: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Users", 
+      key: "id",
+    },
+    onDelete: "CASCADE",
   },
 });
 
 export default BusinessProfile;
-
-// Do I deal with the list of business types?

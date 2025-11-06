@@ -1,6 +1,16 @@
 import sequelize from "../config/db.js";
 import User from "./user.model.js";
-// import other models later, e.g. Income, Expense, TaxRecord, etc.
+import BusinessProfile from "./business.profile.js";
+
+User.hasOne(BusinessProfile, {
+  foreignKey: "userId",
+  as: "businessProfile",
+});
+
+BusinessProfile.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
 
 const connectDB = async () => {
   try {
@@ -14,4 +24,4 @@ const connectDB = async () => {
 
 connectDB();
 
-export { sequelize, User };
+export { sequelize, User, BusinessProfile };

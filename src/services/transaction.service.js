@@ -1,7 +1,6 @@
 import Transaction from "../models/transaction.model.js";
 import { Op } from "sequelize";
 
-// Add a new transaction (income or expense)
 export async function addTransactionService(userId, data) {
   try {
     const newTransaction = await Transaction.create({
@@ -19,8 +18,6 @@ export async function addTransactionService(userId, data) {
     throw new Error(`Error adding transaction: ${error.message}`);
   }
 }
-
-// Get all transactions for a specific user (optionally filtered by date range)
 
 export async function getTransactionsService(userId, query = {}) {
   try {
@@ -41,8 +38,7 @@ export async function getTransactionsService(userId, query = {}) {
     throw new Error(`Error fetching transactions: ${error.message}`);
   }
 }
-
-// Get a single transaction by ID 
+ 
 export async function getTransactionByIdService(userId, transactionId) {
   try {
     const transaction = await Transaction.findOne({
@@ -56,7 +52,6 @@ export async function getTransactionByIdService(userId, transactionId) {
   }
 }
 
-// Update a transaction
 export async function updateTransactionService(userId, transactionId, updates) {
   try {
     const transaction = await Transaction.findOne({
@@ -83,7 +78,6 @@ export async function updateTransactionService(userId, transactionId, updates) {
   }
 }
 
-// Delete a transaction
 export async function deleteTransactionService(userId, transactionId) {
   try {
     const transaction = await Transaction.findOne({

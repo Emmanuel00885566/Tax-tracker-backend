@@ -15,7 +15,7 @@ export async function testReminder(req, res) {
 
     res.status(200).json({ message: `${type} reminder triggered successfully.` });
   } catch (error) {
-    console.error('❌ Reminder test error:', error);
+    console.error(' Reminder test error:', error);
     res.status(500).json({ message: 'Failed to send reminders', error: error.message });
   }
 }
@@ -34,7 +34,7 @@ export async function getUserReminders(req, res) {
       data: reminders,
     });
   } catch (error) {
-    console.error('❌ Error fetching user reminders:', error);
+    console.error(' Error fetching user reminders:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -15,13 +15,12 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-
 app.use(helmet());
 app.use(cors());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Welcome to TaxBuddy API 🚀",
+    message: "Welcome to TaxBuddy API",
     status: "success",
   });
 });
@@ -38,14 +37,14 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    await sequelize.sync(); 
-    console.log("✅ Models synchronized with database.");
+    await sequelize.sync();
+    console.log("Models synchronized with database.");
 
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running on http://localhost:${PORT}`)
-    );
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
   } catch (err) {
-    console.error("❌ Failed to start server:", err.message);
+    console.error("Failed to start server:", err.message);
     process.exit(1);
   }
 };

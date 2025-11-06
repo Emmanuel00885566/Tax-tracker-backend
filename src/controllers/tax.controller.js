@@ -5,9 +5,7 @@ import {
   getTaxSummary
 } from "../services/tax.service.js";
 
-/**
- * Compute Tax Controller
- */
+//Compute Tax Controller
 export async function computeTaxController(req, res) {
   try {
     const { userId } = req.params;
@@ -38,9 +36,7 @@ export async function computeTaxController(req, res) {
   }
 }
 
-/**
- * Fetch Tax Records Controller
- */
+// Fetch Tax Records Controller
 export async function getTaxRecordsController(req, res) {
   try {
     const { userId } = req.params;
@@ -55,9 +51,7 @@ export async function getTaxRecordsController(req, res) {
   }
 }
 
-/**
- * Mark Tax as Paid Controller
- */
+// Mark Tax as Paid Controller
 export async function markTaxAsPaidController(req, res) {
   try {
     const { userId, taxId } = req.params;
@@ -71,9 +65,7 @@ export async function markTaxAsPaidController(req, res) {
   }
 }
 
-/**
- * Tax Summary Controller
- */
+// Tax Summary Controller
 export async function getTaxSummaryController(req, res) {
   try {
     const { userId } = req.params;

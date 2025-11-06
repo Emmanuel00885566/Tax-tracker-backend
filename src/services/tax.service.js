@@ -5,7 +5,6 @@ import { computePIT, computeCIT } from "../utils/tax.utils.js";
 import { getTotalsByCategory, computePBT } from "../utils/transaction.utils.js";
 import { Op } from "sequelize";
 
-// Fetch transactions for user between optional date range
 export async function fetchTransactionsForPeriod(userId, { startDate, endDate } = {}) {
   const where = { user_id: userId };
 
@@ -16,7 +15,6 @@ export async function fetchTransactionsForPeriod(userId, { startDate, endDate } 
   return await Transaction.findAll({ where, order: [["date", "ASC"]] });
 }
 
-// Fetch TaxRecords for a user
 export async function fetchTaxRecords(userId, filters = {}) {
   const where = { user_id: userId };
   if (filters.taxType) where.tax_type = filters.taxType;
@@ -30,7 +28,6 @@ export async function fetchTaxRecords(userId, filters = {}) {
   });
 }
 
-// Summary of transactions for user (total income, deductible expenses etc)
 export async function getTransactionsSummary(userId, { startDate, endDate } = {}) {
   const transactions = await fetchTransactionsForPeriod(userId, { startDate, endDate });
 
@@ -55,7 +52,6 @@ export async function getTransactionsSummary(userId, { startDate, endDate } = {}
   };
 }
 
-// Compute Tax for user — supports PIT and CIT
 export async function computeTaxForUser(userId, options = {}) {
   const { taxType = "PIT", startDate, endDate, turnover = 0, overrideBrackets, overrideCITRules } = options;
 
@@ -111,7 +107,6 @@ export async function computeTaxForUser(userId, options = {}) {
   };
 }
 
-// Mark a tax record as paid
 export async function markTaxAsPaid(userId, taxId, amount, paidOn) {
   const record = await TaxRecord.findOne({ where: { id: taxId, user_id: userId } });
   if (!record) throw new Error("Tax record not found");
@@ -124,8 +119,6 @@ export async function markTaxAsPaid(userId, taxId, amount, paidOn) {
   return record;
 }
 
-
-//   Compute dashboard summary for taxes
 export async function getTaxSummary(userId) {
   const records = await fetchTaxRecords(userId);
   const totalRecords = records.length;

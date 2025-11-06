@@ -6,10 +6,7 @@ import {
   deleteTransactionService,
 } from "../services/transaction.service.js";
 
-/**
- * Add a new transaction
- * POST /api/transactions/:userId
- */
+//Add a new transaction
 export async function addTransactionController(req, res) {
   try {
     const { userId } = req.params;
@@ -25,10 +22,7 @@ export async function addTransactionController(req, res) {
   }
 }
 
-/**
- * Get all transactions for a user
- * GET /api/transactions/:userId
- */
+// Get all transactions for a user
 export async function getTransactionsController(req, res) {
   try {
     const { userId } = req.params;
@@ -44,10 +38,8 @@ export async function getTransactionsController(req, res) {
   }
 }
 
-/**
- * Get a single transaction by ID
- * GET /api/transactions/:userId/:id
- */
+
+// Get a single transaction by ID 
 export async function getTransactionByIdController(req, res) {
   try {
     const { userId, id } = req.params;
@@ -62,10 +54,7 @@ export async function getTransactionByIdController(req, res) {
   }
 }
 
-/**
- * Update a transaction
- * PUT /api/transactions/:userId/:id
- */
+// Update a transaction
 export async function updateTransactionController(req, res) {
   try {
     const { userId, id } = req.params;
@@ -81,10 +70,7 @@ export async function updateTransactionController(req, res) {
   }
 }
 
-/**
- * Delete a transaction
- * DELETE /api/transactions/:userId/:id
- */
+// Delete a transaction
 export async function deleteTransactionController(req, res) {
   try {
     const { userId, id } = req.params;

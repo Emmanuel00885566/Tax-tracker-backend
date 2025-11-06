@@ -1,17 +1,30 @@
 import Joi from "joi";
 
-// Registration validation
 export const registerValidator = (data) => {
   const schema = Joi.object({
-    fullName: Joi.string().min(3).max(50).required(),
+    fullname: Joi.string().min(3).max(50).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
-    role: Joi.string().valid("individual", "company").required()
+    role: Joi.string().valid("individual", "business").required(),
+
+    annualIncomeRange: Joi.string().optional(),
+    tax_reminder: Joi.boolean().optional(),
+
+    businessName: Joi.when("role", {
+      is: "business",
+      then: Joi.string().min(2).required(),
+      otherwise: Joi.forbidden()
+    }),
+    businessType: Joi.when("role", {
+      is: "business",
+      then: Joi.string().min(2).required(),
+      otherwise: Joi.forbidden()
+    })
   });
+
   return schema.validate(data);
 };
 
-// Login validation
 export const loginValidator = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
@@ -20,7 +33,6 @@ export const loginValidator = (data) => {
   return schema.validate(data);
 };
 
-// OTP validation
 export const otpValidator = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
@@ -29,7 +41,6 @@ export const otpValidator = (data) => {
   return schema.validate(data);
 };
 
-// Password update validation
 export const passwordChangeValidator = (data) => {
   const schema = Joi.object({
     oldPassword: Joi.string().required(),
