@@ -10,7 +10,7 @@ It supports both **individual** and **business** accounts, includes OTP verifica
 - [Folder Structure](#folder-structure)
 - [Installation & Setup](#installation-&-setup)
 - [Environment Variables](#environment-variables)
-- [API Endpoints](#api-endpoints)**
+- [API Endpoints](#api-endpoints)
 - [How It Works](#how-it-works)
 - [Contributors](#contributors)
 - [License](#license)
@@ -143,7 +143,7 @@ git pull	Fetch latest updates
 git push origin 	Push changes to GitHub
 ```
 
-## Environment variables
+## Environment Variables
 
 Create a `.env` file in the project root and add:
 
@@ -236,7 +236,8 @@ EMAIL_PASS=your_app_password
 
 ---
 
-## How it Works (Not Yet Done)
+## How It Works 
+(Not Yet Done)
 
 ##  Contributors
 
@@ -248,6 +249,7 @@ EMAIL_PASS=your_app_password
 | Adodo Daniel           | Backend Developer             |
 | Echanny Idagu          | Backend Developer             |
 | KaryM                  | Backend Developer             |
+| Claudia Bose Olawale   | Backend Developer             |
 
 Author
 🔗 GitHub Profile
