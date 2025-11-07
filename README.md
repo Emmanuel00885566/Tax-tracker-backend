@@ -2,59 +2,31 @@
 
 The **Tax Tracker Backend** provides secure endpoints for managing users, income and expenses, tax computations, reminders, and financial reports.  
 It supports both **individual** and **business** accounts, includes OTP verification, and provides ready endpoints for frontend integration.
----
+
 
 ## Table of Contents
 - [Core Features](#core-features)
 - [Tech Stack](#tech-stack)
+- [Base URL](#base-url)
 - [Folder Structure](#folder-structure)
-- [Installation & Setup](#installation-&-setup)
+- [Installation & Setup](#installation--setup)
 - [Environment Variables](#environment-variables)
 - [API Endpoints](#api-endpoints)
 - [How It Works](#how-it-works)
 - [Contributors](#contributors)
 - [License](#license)
 
-##  Core Features
-
-###  User Authentication Management 
-- Register and login securely using JWT.
-- Password hashing with bcrypt.
-###  Income & Expense Management
-- Create, read, update, and delete (CRUD) transactions.
-- Categorize transactions as **income** or **expense**.
-- Mark expenses as **deductible**.
-- Auto-calculate total income, total expense, and total deductible amounts.
-
-###  Tax Computation
-- Automatically compute **taxable income** = income − deductible expenses.
-- Apply tax rates dynamically 
-- Compute total tax owed per user.
-
-###  Email Service
-- Send email notifications for registration, reminders, or report generation.
-- Configurable via third-party services (e.g. Nodemailer).
-
-###  Reminder System
-- Schedule reminders for filing taxes or upcoming payments.
-- Uses **Node-cron**  scheduler for automated alerts.
-
-###  Report Generation
-- Generate PDF or CSV reports summarizing:
-  - Income and expense data
-  - Tax calculations
-  - Monthly summaries
-- Reports can be sent via email or downloaded.
+## Core Features
 
 
+---
 
 ## Tech Stack
-
 | Category | Technology |
 |-----------|-------------|
 | Runtime | Node.js |
 | Framework | Express.js |
-| Database | MySQL / Sequelize |
+| Database | **PostgreSQL / Sequelize** |
 | Authentication | JWT + Bcrypt |
 | Scheduler | Node-cron |
 | Email | Nodemailer |
@@ -63,8 +35,18 @@ It supports both **individual** and **business** accounts, includes OTP verifica
 
 ---
 
-##  Folder Structure
+## Base URL
 
+| Environment | URL |
+|--------------|---------------------------------------------|
+| **Production (Live)** | https://tax-tracker-backend.onrender.com/ |
+| **Local Development** | http://localhost:5000 |
+
+> Tip: Append any route to the base URL to test directly.  
+> Example:  
+> `https://tax-tracker-backend.onrender.com/api/auth/sign_in`
+
+##  Folder Structure
 .
 ├─ server.js  
 ├─ package.json  
@@ -252,7 +234,7 @@ EMAIL_PASS=your_app_password
 | Claudia Bose Olawale   | Backend Developer             |
 
 Author
-🔗 GitHub Profile
+
 
 
  License
