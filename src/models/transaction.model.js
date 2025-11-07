@@ -13,10 +13,10 @@ const Transaction = sequelize.define(
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: User,
-        key: "id",
-      },
+      // references: {
+      //   model: User,
+      //   key: "id",
+      // },
       onDelete: "CASCADE",
     },
     type: {
