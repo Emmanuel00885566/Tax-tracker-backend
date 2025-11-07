@@ -46,10 +46,10 @@ export const verifyToken = (req, res, next) => {
   }
 };
 
-// ROLE AUTHORIZATION MIDDLEWARE
+// ACCOUNT TYPE AUTHORIZATION MIDDLEWARE
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role)) {
+    if (!req.user || !allowedRoles.includes(req.user.account_type)) {
       return res.status(403).json({
         success: false,
         message: "Access denied. Insufficient permissions.",

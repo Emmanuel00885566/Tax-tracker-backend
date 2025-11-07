@@ -19,7 +19,7 @@ export async function userLogin({ email, password }) {
   const isPasswordValid = await user.verifyPassword(password);
   if (!isPasswordValid) throw new Error("Login failed. Incorrect password.");
 
-  const token = generateToken({ id: user.id, role: user.role, email: user.email });
+  const token = generateToken({ id: user.id, account_type: user.account_type, email: user.email });
 
   return {
     ...user.toJSON(),
@@ -30,13 +30,13 @@ export async function userLogin({ email, password }) {
 // ==================== USER PROFILE - INDIVIDUAL ====================
 export async function getUserProfile(user) {
   const foundUser = await User.findByPk(user.id, {
-    attributes: ["email", "role", "annualIncomeRange", "tin", "tax_reminder"],
+  attributes: ["email", "account_type", "annualIncomeRange", "tin", "tax_reminder"],
   });
   if (!foundUser) throw new Error("User not found");
 
   return {
     full_name: foundUser.email.split("@")[0],
-    account_type: foundUser.role,
+    account_type: foundUser.account_type,
     incomeBracket: foundUser.annualIncomeRange,
     tax_identification_number: foundUser.tin,
     taxRemindersEnabled: foundUser.tax_reminder,
@@ -46,7 +46,7 @@ export async function getUserProfile(user) {
 // ==================== USER PROFILE - BUSINESS ====================
 export async function getBusinessProfile(user) {
   const foundBusiness = await User.findByPk(user.id, {
-    attributes: ["role", "annualIncomeRange", "tin", "tax_reminder"],
+    attributes: ["account_type", "annualIncomeRange", "tin", "tax_reminder"],
     include: [
       {
         model: BusinessProfile,
@@ -58,7 +58,7 @@ export async function getBusinessProfile(user) {
   if (!foundBusiness) throw new Error("Business user not found");
 
   return {
-    account_type: foundBusiness.role,
+    account_type: foundBusiness.account_type,
     business_name: foundBusiness.businessProfile?.businessName || "N/A",
     incomeBracket: foundBusiness.annualIncomeRange,
     tax_identification_number: foundBusiness.tin,
@@ -75,12 +75,12 @@ export async function updateUserProf(userId, updates) {
   if (!updated) throw new Error("User not found or no changes made");
 
   const updatedUser = await User.findByPk(userId, {
-    attributes: ["email", "role", "annualIncomeRange", "tin", "tax_reminder"],
+    attributes: ["email", "account_type", "annualIncomeRange", "tin", "tax_reminder"],
   });
 
   return {
     full_name: updatedUser.email.split("@")[0],
-    account_type: updatedUser.role,
+    account_type: updatedUser.account_type,
     incomeBracket: updatedUser.annualIncomeRange,
     tax_identification_number: updatedUser.tin,
     taxRemindersEnabled: updatedUser.tax_reminder,
@@ -99,7 +99,7 @@ export async function updateBusinessProf(userId, updates) {
   await BusinessProfile.update(businessUpdates, { where: { userId } });
 
   const updatedBusiness = await User.findByPk(userId, {
-    attributes: ["role", "annualIncomeRange", "tin", "tax_reminder"],
+    attributes: ["account_type", "annualIncomeRange", "tin", "tax_reminder"],
     include: [{ model: BusinessProfile,
       as: "businessProfile",
       attributes: ["businessName", "businessType"] }],
@@ -108,7 +108,7 @@ export async function updateBusinessProf(userId, updates) {
   if (!updatedBusiness) throw new Error("Business profile not found");
 
   return {
-    account_type: updatedBusiness.role,
+    account_type: updatedBusiness.account_type,
     business_name: updatedBusiness.businessProfile?.businessName || "N/A",
     incomeBracket: updatedBusiness.annualIncomeRange,
     tax_identification_number: updatedBusiness.tin,
