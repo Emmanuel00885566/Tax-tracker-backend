@@ -48,7 +48,7 @@ const startServer = async () => {
 
     await connectDB();
 
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: false });
 
     console.log("Models synchronized with PostgreSQL.");
 
