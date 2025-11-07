@@ -1,8 +1,8 @@
 import Transaction from "../models/transaction.model.js";
 import TaxRecord from "../models/tax.record.model.js";
 import User from "../models/user.model.js";
-import { computePIT, computeCIT } from "./utils/tax.utils.js";
-import { getTotalsByCategory, computePBT } from "./utils/transaction.utils.js";
+import { computePIT, computeCIT } from "../utils/tax.utils.js";
+import { getTotalsByCategory, computePBT } from "../utils/transaction.utils.js";
 import { Op } from "sequelize";
 
 export async function fetchTransactionsForPeriod(userId, { startDate, endDate } = {}) {

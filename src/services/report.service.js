@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { Op } from 'sequelize';
-import { formatCurrency, parseRange } from './utils/report.utils.js';
+import { formatCurrency, parseRange } from '../utils/report.utils.js';
 import Transaction from '../models/transaction.model.js';
 
 export async function buildSummaryData(userId, from, to) {

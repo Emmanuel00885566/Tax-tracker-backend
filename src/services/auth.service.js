@@ -1,5 +1,5 @@
 import { User } from "../models/index.js";
-import generateToken from "./utils/generate.token.js";
+import generateToken from "../utils/generate.token.js";
 import BusinessProfile from "../models/business.profile.js";
 
 // ==================== USER REGISTRATION ====================
