@@ -3,7 +3,6 @@
 The **Tax Tracker Backend** provides secure endpoints for managing users, income and expenses, tax computations, reminders, and financial reports.  
 It supports both **individual** and **business** accounts, includes OTP verification, and provides ready endpoints for frontend integration.
 
-
 ## Table of Contents
 - [Core Features](#core-features)
 - [Tech Stack](#tech-stack)
@@ -18,65 +17,178 @@ It supports both **individual** and **business** accounts, includes OTP verifica
 
 ## Core Features
 
+### **Project Overview**
+The **Tax Tracker App** helps individuals and companies calculate, track, and manage their payable taxes based on income, business category, deductible expenses, and applicable Nigerian tax laws.  
+The backend system automates tax computation, maintains financial transaction records, and generates tax reports for both **Company Income Tax (CIT)** and **Personal Income Tax (PIT)**.
+
+### **MVP Goal**
+To build a working backend that allows:
+1. Users (companies or individuals) to register and manage their profiles.
+2. Record incomes and deductible expenses.
+3. Automatically calculate estimated taxes (CIT/PIT).
+4. Generate downloadable tax summary reports.
+5. Schedule automated tax reminders and notifications.
+
+### **1. Authentication & User Roles**
+**User Types:**
+- Individual (Personal Income Tax)
+- Company (Company Income Tax)
+
+**Endpoints:**
+- `POST /auth/sign_up`
+- `POST /auth/sign_in`
+
+**Implementation:**
+- JWT-based authentication
+- Password hashing with bcrypt
+
+**Data Fields:**
+`fullname`, `email`, `password`, `role`, `businessName` (for business accounts)
+
+### **2. Income & Expense Recording**
+Users can add, view, and delete income and expense records.
+
+**Database Fields:**
+- `user_id`, `type (income | expense)`, `amount`, `description`, `date`, `is_deductible`
+
+This data forms the base for tax computation.
+### **3. Tax Computation Engine**
+Core tax logic is implemented in the backend service layer.
+
+**Formula:**
+taxable_income = total_income - deductible_expenses
+tax_payable = applyTaxRate(taxable_income, user.role)
+
+
+**Tax Rules:**
+- **CIT:**  
+  - 20% for companies with < ₦100M turnover  
+  - 30% for companies with ≥ ₦100M turnover  
+- **PIT:** Progressive brackets (7% – 24%) per Nigeria’s PIT Act
 
 ---
 
+### **4. Tax Scheduler & Reminders**
+Automated scheduling using **node-cron**.
+
+**Use Cases:**
+- Monthly or quarterly tax payment alerts
+- Filing deadline reminders
+
+Example: sends an email every 30 days with tax summary and next due date.
+
+### **5. Report Generation (PDF/CSV)**
+Users can download detailed reports within a date range.
+
+**Sample Endpoint:**
+`GET /api/report/download?format=pdf&type=summary&from=2025-01-01&to=2025-01-31`
+
+**Report Fields:**
+- Total Income  
+- Total Deductible Expenses  
+- Taxable Income  
+- Tax Payable  
+
+Generated using **pdfkit** or **csv-writer**.
+
+### **6. Database Schema (MySQL + Sequelize ORM)**
+**Tables:**
+1. **Users:** `user_id`, `fullname`, `email`, `role`, `password`, `businessName`
+2. **Transactions:** `transaction_id`, `user_id`, `type`, `amount`, `description`, `is_deductible`, `date`
+3. **TaxRecords:** `record_id`, `user_id`, `tax_type`, `taxable_income`, `tax_amount`, `created_at`
+4. **Reminders:** `reminder_id`, `user_id`, `message`, `frequency`, `next_trigger`
+
+### **7. Security & Best Practices**
+- Input validation (express-validator)
+- Password hashing (bcrypt)
+- SQL injection prevention (Sequelize ORM)
+- Environment-based secrets (dotenv)
+- Basic rate limiting (express-rate-limit)
+- Protected routes via JWT
+
+
 ## Tech Stack
+
 | Category | Technology |
 |-----------|-------------|
 | Runtime | Node.js |
 | Framework | Express.js |
-| Database | **PostgreSQL / Sequelize** |
+| Database | **MySQL + Sequelize ORM** |
 | Authentication | JWT + Bcrypt |
 | Scheduler | Node-cron |
 | Email | Nodemailer |
-| Reports | pdfkit  |
+| Reports | pdfkit |
 | Environment | Dotenv |
-
----
 
 ## Base URL
 
 | Environment | URL |
 |--------------|---------------------------------------------|
-| **Production (Live)** | https://tax-tracker-backend.onrender.com/ |
+| **Production (Live)** | https://tax-tracker-backend.onrender.com |
 | **Local Development** | http://localhost:5000 |
 
 > Tip: Append any route to the base URL to test directly.  
 > Example:  
 > `https://tax-tracker-backend.onrender.com/api/auth/sign_in`
 
+
 ##  Folder Structure
 .
-├─ server.js  
-├─ package.json  
-├─ .env.example  
-├─ src/  
-│  ├─ config/  
-│  │  └─ db.js  
-│  ├─ controllers/  
-│  │  ├─ auth.controller.js  
-│  │  ├─ transaction.controller.js  
-│  │  └─ tax.controller.js  
-│  ├─ middlewares/  
-│  │  └─ auth.middleware.js  
-│  ├─ models/  
-│  │  ├─ index.js  
-│  │  ├─ user.model.js  
-│  │  ├─ transaction.model.js  
-│  │  └─ taxRecord.model.js  
-│  ├─ routes/  
-│  │  ├─ auth.routes.js  
-│  │  ├─ transactions.routes.js  
-│  │  └─ tax.routes.js  
-│  ├─ services/  
-│  │  ├─ auth.service.js  
-│  │  ├─ transaction.service.js  
-│  │  └─ tax.service.js  
-│  └─ utils/  
-│     └─ tax.utils.js  
-└─ README.md  
-
+TAX-TRACKER-BACKEND
+├─ server.js
+├─ package.json
+├─ README.md
+├─ node_modules/
+└─ src/
+├─ config/
+│ └─ db.js
+├─ controllers/
+│ ├─ auth.controller.js
+│ ├─ income.expense.controller.js
+│ ├─ transaction.controller.js
+│ ├─ tax.controller.js
+│ ├─ otp.controller.js
+│ ├─ password.controller.js
+│ ├─ reminder.controller.js
+│ └─ report.controller.js
+├─ routes/
+│ ├─ auth.routes.js
+│ ├─ transaction.routes.js
+│ ├─ income.expense.routes.js
+│ ├─ reminder.routes.js
+│ ├─ report.routes.js
+│ └─ tax.routes.js
+├─ services/
+│ ├─ auth.service.js
+│ ├─ email.service.js
+│ ├─ transaction.service.js
+│ ├─ income.expense.service.js
+│ ├─ otp.service.js
+│ ├─ reminder.service.js
+│ ├─ report.service.js
+│ ├─ sms.service.js
+│ ├─ tax.service.js
+│ └─ tax.summary.service.js
+├─ models/
+│ ├─ index.js
+│ ├─ user.model.js
+│ ├─ transaction.model.js
+│ ├─ income.expense.model.js
+│ ├─ business.profile.js
+│ ├─ reminder.model.js
+│ ├─ notification.model.js
+│ └─ tax.record.model.js
+├─ middlewares/
+│ ├─ auth.middleware.js
+│ └─ role.middleware.js
+├─ jobs/
+│ └─ reminder.cron.js
+└─ utils/
+├─ tax.utils.js
+├─ transaction.utils.js
+├─ validators.js
+├─ generate.token.js
+└─ report.utils.js
 ##  Installation & Setup
 
 ###  Clone the repository
