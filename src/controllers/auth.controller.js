@@ -52,7 +52,7 @@ async function registerUser(req, res) {
   });
 }
 
-    await sendEmailOTP(newUser);
+    sendEmailOTP(newUser).catch(err => console.error("OTP send failed:", err.message));
 
     res.status(201).json({
       success: true,
