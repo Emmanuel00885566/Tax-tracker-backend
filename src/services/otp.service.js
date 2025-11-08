@@ -32,7 +32,7 @@ export const sendEmailOTP = async (user) => {
   };
 
   await transporter.sendMail(mailOptions);
-  console.log(`✅ OTP sent to ${user.email}`);
+  console.log(`OTP sent to ${user.email}`);
 
   return { email: user.email, expiresAt: expiry };
 };
