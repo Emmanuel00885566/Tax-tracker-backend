@@ -1,8 +1,17 @@
 import { User } from "../models/index.js";
 import nodemailer from "nodemailer";
 
-
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+// Create reusable transporter for Mailtrap
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 export const sendEmailOTP = async (user) => {
   if (user.isVerified) {
@@ -10,28 +19,21 @@ export const sendEmailOTP = async (user) => {
   }
 
   const otp = generateOTP();
-  const expiry = new Date(Date.now() + 10 * 60 * 1000); 
+  const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
   user.otpCode = otp;
   user.otpExpiresAt = expiry;
   await user.save();
 
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
   const mailOptions = {
-    from: `"TaxEase Support" <${process.env.EMAIL_USER}>`,
+    from: `"TaxBuddy Support" <${process.env.EMAIL_USER}>`,
     to: user.email,
-    subject: "Verify Your Email - TaxEase OTP",
-    text: `Hello ${user.username || ""},\n\nYour OTP for email verification is ${otp}. It will expire in 10 minutes.\n\nIf you didn’t request this, please ignore this message.\n\n– The TaxEase Team`,
+    subject: "Verify Your Email - TaxBuddy OTP",
+    text: `Hello ${user.username || user.fullname || "User"},\n\nYour OTP for email verification is ${otp}. It will expire in 10 minutes.\n\nIf you didn’t request this, please ignore this message.\n\n– The TaxBuddy Team`,
   };
 
   await transporter.sendMail(mailOptions);
+  console.log(`✅ OTP sent to ${user.email}`);
 
   return { email: user.email, expiresAt: expiry };
 };

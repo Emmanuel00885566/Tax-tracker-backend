@@ -18,8 +18,8 @@ export async function sendEmail(to, subject, text) {
       subject,
       text,
     });
-    console.log(`✅ Email sent to ${to}`);
+    console.log(`Email sent to ${to}`);
   } catch (error) {
-    console.error(`❌ Error sending email to ${to}:`, error.message);
+    console.error(`Error sending email to ${to}:`, error.message);
   }
 }
