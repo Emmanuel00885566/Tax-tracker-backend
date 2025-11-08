@@ -3,7 +3,6 @@ import nodemailer from "nodemailer";
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-// Create reusable transporter for Mailtrap
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
