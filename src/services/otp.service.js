@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
+// ✅ Mailtrap transporter (kept intact, just commented out for demo mode)
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
@@ -24,6 +25,22 @@ export const sendEmailOTP = async (user) => {
   user.otpExpiresAt = expiry;
   await user.save();
 
+  // ============================
+  // 🚀 DEMO MODE SECTION (for presentation)
+  // ============================
+  console.log(`🎯 DEMO MODE: OTP for ${user.email} is ${otp}`);
+  // return the OTP directly in the response for easy testing
+  return {
+    email: user.email,
+    otp, // <— this line makes OTP visible in the API response
+    expiresAt: expiry,
+    demoMode: true,
+  };
+
+  // ============================
+  // 📨 MAILTRAP SECTION (restore after presentation)
+  // ============================
+  /*
   const mailOptions = {
     from: `"TaxBuddy Support" <${process.env.EMAIL_USER}>`,
     to: user.email,
@@ -32,9 +49,10 @@ export const sendEmailOTP = async (user) => {
   };
 
   await transporter.sendMail(mailOptions);
-  console.log(`OTP sent to ${user.email}`);
+  console.log(`✅ OTP sent to ${user.email}`);
 
   return { email: user.email, expiresAt: expiry };
+  */
 };
 
 export const verifyEmailOTP = async (email, otp) => {
