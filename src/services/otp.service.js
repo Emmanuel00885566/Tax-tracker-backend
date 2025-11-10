@@ -4,14 +4,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-/**
- * Utility: Generate a 6-digit OTP
- */
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-/**
- * Utility: Create a mail transporter for Mailtrap (development)
- */
 const mailtrapTransporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
@@ -21,9 +15,6 @@ const mailtrapTransporter = nodemailer.createTransport({
   },
 });
 
-/**
- * Function to send OTP via Brevo (Sendinblue)
- */
 const sendViaBrevo = async (email, subject, text) => {
   try {
     await axios.post(
@@ -48,28 +39,22 @@ const sendViaBrevo = async (email, subject, text) => {
   }
 };
 
-/**
- * Send Email OTP (works for Mailtrap or Brevo depending on ENV)
- */
 export const sendEmailOTP = async (user) => {
   if (user.isVerified) {
     throw new Error("User is already verified.");
   }
 
   const otp = generateOTP();
-  const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins validity
+  const expiry = new Date(Date.now() + 10 * 60 * 1000);
 
-  // Save OTP and expiry
   user.otpCode = otp;
   user.otpExpiresAt = expiry;
   await user.save();
 
   const message = `Hello ${user.username || user.fullname || "User"},\n\nYour OTP for email verification is ${otp}. It will expire in 10 minutes.\n\nIf you didn’t request this, please ignore this message.\n\n– The TaxBuddy Team`;
 
-  // Pick mail provider dynamically
   const provider = process.env.MAIL_PROVIDER || "mailtrap";
 
-  // Non-blocking send (no await) for better UX
   (async () => {
     try {
       if (provider === "brevo") {
@@ -91,9 +76,6 @@ export const sendEmailOTP = async (user) => {
   return { email: user.email, expiresAt: expiry };
 };
 
-/**
- * Verify OTP Function
- */
 export const verifyEmailOTP = async (email, otp) => {
   const user = await User.findOne({ where: { email } });
 
@@ -111,9 +93,6 @@ export const verifyEmailOTP = async (email, otp) => {
   return user;
 };
 
-/**
- * (Optional) Dev-only: Fetch latest OTP for testing
- */
 export const getLatestOTP = async (email) => {
   const user = await User.findOne({ where: { email } });
   if (!user || !user.otpCode) throw new Error("No OTP found for this user.");

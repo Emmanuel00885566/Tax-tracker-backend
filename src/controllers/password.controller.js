@@ -75,7 +75,8 @@ export const resetPasswordWithToken = async (req, res) => {
     if (!user)
       return res.status(404).json({ success: false, message: "User not found." });
 
-    user.password = password;
+   const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
     await user.save();
 
     res.status(200).json({
