@@ -40,7 +40,7 @@ router.post("/verify_otp", verifyOtpController);
 
 // =================== Password Management ===================
 router.post("/forgot_password", forgotPassword);
-router.put("/reset_password/:token", verifyToken, authorizeRoles("individual", "business"), resetPasswordWithToken);
+router.put("/reset_password/:token", resetPasswordWithToken);
 router.patch("/users/change_password", verifyToken, changePassword);
 
 // =================== Profile Management ===================
