@@ -5,33 +5,68 @@ import bcrypt from "bcrypt";
 const User = sequelize.define(
   "User",
   {
-    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    email: { 
-      type: DataTypes.STRING, 
-      allowNull: false, 
-      unique: true, 
-      validate: { isEmail: true } 
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    password: { type: DataTypes.STRING, allowNull: false },
-    role: {
+
+    fullname: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: { isEmail: true },
+    },
+
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    account_type: {
       type: DataTypes.ENUM("individual", "business", "admin"),
       allowNull: false,
       defaultValue: "individual",
     },
-    tin: { type: DataTypes.STRING, allowNull: true },
-    annualIncomeRange: {
-      type: DataTypes.ENUM(
-        "₦0 - ₦99,999",
-        "₦100,000 - ₦499,999",
-        "₦500,000 - ₦999,999",
-        "₦1,000,000 - ₦4,999,999",
-        "₦5,000,000 - ₦10,000,000"
-      ),
+
+    tin: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    tax_reminder: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: true },
-    isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
-    otpCode: { type: DataTypes.STRING, allowNull: true },
-    otpExpiresAt: { type: DataTypes.DATE, allowNull: true },
+
+    annualIncomeRange: {
+      type: DataTypes.STRING,
+      allowNull: true, 
+      validate: {
+        len: [1, 50],
+      },
+    },
+
+    tax_reminder: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: true,
+    },
+
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+
+    otpCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    otpExpiresAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,
