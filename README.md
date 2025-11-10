@@ -342,7 +342,7 @@ EMAIL_PASS=your_app_password
 | Boboye Esther          | Backend Developer             |
 | Adodo Daniel           | Backend Developer             |
 | Echanny Idagu          | Backend Developer             |
-| KaryM                  | Backend Developer             |
+| Mungathia Nancy Karimi | Backend Developer             |
 | Claudia Bose Olawale   | Backend Developer             |
 
 Author
