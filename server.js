@@ -29,14 +29,16 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors({
   origin: [
-    "https://isejosh.github.io", 
-    "http://localhost:5500",      
-    "http://127.0.0.1:5500"       
+    "https://isejosh.github.io",
+    "https://taxbuddy-two.vercel.app",  // ✅ new Vercel domain
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
 
 app.get("/", (req, res) => {
   res.json({
