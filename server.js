@@ -30,7 +30,7 @@ app.use(helmet());
 app.use(cors({
   origin: [
     "https://isejosh.github.io",
-    "https://taxbuddy-two.vercel.app",  // ✅ new Vercel domain
+    "https://taxbuddy-two.vercel.app", 
     "http://localhost:5500",
     "http://127.0.0.1:5500"
   ],
