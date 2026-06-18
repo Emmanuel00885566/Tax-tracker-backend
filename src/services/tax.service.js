@@ -1,4 +1,5 @@
 import Transaction from "../models/transaction.model.js";
+import IncomeExpense from "../models/income.expense.model.js";
 import TaxRecord from "../models/tax.record.model.js";
 import User from "../models/user.model.js";
 import { computePIT, computeCIT } from "../utils/tax.utils.js";
@@ -7,12 +8,18 @@ import { Op } from "sequelize";
 
 export async function fetchTransactionsForPeriod(userId, { startDate, endDate } = {}) {
   const where = { user_id: userId };
-
   if (startDate && endDate) where.date = { [Op.between]: [startDate, endDate] };
   else if (startDate) where.date = { [Op.gte]: startDate };
   else if (endDate) where.date = { [Op.lte]: endDate };
 
-  return await Transaction.findAll({ where, order: [["date", "ASC"]] });
+  // Fetch from BOTH tables
+  const [transactions, incomeExpenses] = await Promise.all([
+    Transaction.findAll({ where, order: [["date", "ASC"]] }),
+    IncomeExpense.findAll({ where, order: [["date", "ASC"]] }),
+  ]);
+
+  // Merge both arrays into one
+  return [...transactions, ...incomeExpenses];
 }
 
 export async function fetchTaxRecords(userId, filters = {}) {
