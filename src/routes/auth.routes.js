@@ -23,9 +23,14 @@ import {
 import { authorizeRoles } from "../middlewares/role.middleware.js";
 import { forgotPassword, resetPasswordWithToken } from "../controllers/password.controller.js";
 import { sendOtpController, verifyOtpController } from "../controllers/otp.controller.js";
+import User from '../models/user.model.js';
+import TaxRecord from '../models/tax.record.model.js';
+import IncomeExpense from '../models/income.expense.model.js';
+import Transaction from '../models/transaction.model.js';
+import BusinessProfile from '../models/business.profile.js';
 
 const router = express.Router();
-import User from '../models/user.model.js';
+
 
 // =================== Account Creation ===================
 router.post("/choose_account", (req, res) => {
@@ -72,6 +77,21 @@ router.get('/all-users', async (req, res) => {
       order: [['createdAt', 'DESC']],
     });
     res.json({ success: true, count: users.length, data: users });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+router.delete('/clear-all-users', async (req, res) => {
+  try {
+    // Delete related records first to avoid foreign key errors
+    await TaxRecord.destroy({ where: {} });
+    await IncomeExpense.destroy({ where: {} });
+    await Transaction.destroy({ where: {} });
+    await BusinessProfile.destroy({ where: {} });
+    await User.destroy({ where: {} });
+    
+    res.json({ success: true, message: 'All users and records cleared' });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
