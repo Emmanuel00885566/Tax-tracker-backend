@@ -25,6 +25,7 @@ import { forgotPassword, resetPasswordWithToken } from "../controllers/password.
 import { sendOtpController, verifyOtpController } from "../controllers/otp.controller.js";
 
 const router = express.Router();
+import User from '../models/user.model.js';
 
 // =================== Account Creation ===================
 router.post("/choose_account", (req, res) => {
@@ -50,5 +51,19 @@ router.patch("/individual/profile", verifyToken, updateIndividualProfile);
 router.patch("/business/profile", verifyToken, updateBusinessProfile);
 router.put("/preferences/reminders", verifyToken, updateReminderPreference);
 router.delete("/profile", verifyToken, deleteUser);
+
+router.delete('/clear-test-users', async (req, res) => {
+  try {
+    await User.destroy({ 
+      where: { 
+        isVerified: false 
+      } 
+    });
+    res.json({ success: true, message: 'Test users cleared' });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
 
 export default router;
