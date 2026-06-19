@@ -65,5 +65,16 @@ router.delete('/clear-test-users', async (req, res) => {
   }
 });
 
+router.get('/all-users', async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'email', 'account_type', 'isVerified', 'createdAt'],
+      order: [['createdAt', 'DESC']],
+    });
+    res.json({ success: true, count: users.length, data: users });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
 
 export default router;
