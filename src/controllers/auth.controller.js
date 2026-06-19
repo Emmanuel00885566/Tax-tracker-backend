@@ -36,7 +36,7 @@ async function registerUser(req, res) {
       fullname: fullname?.trim(),
       email,
       password,
-      role,
+      account_type: role,
       tin: tax_identification_number || null,
       annualIncomeRange,
       tax_reminder,
