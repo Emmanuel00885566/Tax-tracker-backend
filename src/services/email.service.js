@@ -12,7 +12,7 @@ const mailtrapTransporter = nodemailer.createTransport({
   },
 });
 
-async function sendViaBrevo(to, subject, text) {
+async function sendViaBrevo(to, subject, text, html) {
   await axios.post(
     "https://api.brevo.com/v3/smtp/email",
     {
@@ -20,6 +20,7 @@ async function sendViaBrevo(to, subject, text) {
       to: [{ email: to }],
       subject,
       textContent: text,
+      htmlContent: html,
     },
     {
       headers: {
@@ -30,12 +31,12 @@ async function sendViaBrevo(to, subject, text) {
   );
 }
 
-export async function sendEmail(to, subject, text) {
+export async function sendEmail(to, subject, text, html) {
   const provider = process.env.MAIL_PROVIDER || "mailtrap";
 
   try {
     if (provider === "brevo") {
-      await sendViaBrevo(to, subject, text);
+      await sendViaBrevo(to, subject, text, html);
       console.log(`Brevo email sent to ${to}`);
     } else {
       await mailtrapTransporter.sendMail({
@@ -43,6 +44,7 @@ export async function sendEmail(to, subject, text) {
         to,
         subject,
         text,
+        html,
       });
       console.log(`Mailtrap email sent to ${to}`);
     }
