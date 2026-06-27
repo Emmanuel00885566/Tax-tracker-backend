@@ -61,47 +61,46 @@ router.patch("/business/profile", verifyToken, updateBusinessProfile);
 router.put("/preferences/reminders", verifyToken, updateReminderPreference);
 router.delete("/profile", verifyToken, deleteUser);
 
-router.delete('/clear-test-users', async (req, res) => {
-  try {
-    await User.destroy({ 
-      where: { 
-        isVerified: false 
-      } 
-    });
-    res.json({ success: true, message: 'Test users cleared' });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
-  }
-});
+// router.delete('/clear-test-users', async (req, res) => {
+//   try {
+//     await User.destroy({ 
+//       where: { 
+//         isVerified: false 
+//       } 
+//     });
+//     res.json({ success: true, message: 'Test users cleared' });
+//   } catch (err) {
+//     res.status(400).json({ success: false, error: err.message });
+//   }
+// });
 
-router.get('/all-users', async (req, res) => {
-  try {
-    const users = await User.findAll({
-      attributes: ['id', 'email', 'account_type', 'isVerified', 'createdAt'],
-      order: [['createdAt', 'DESC']],
-    });
-    res.json({ success: true, count: users.length, data: users });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
-  }
-});
+// router.get('/all-users', async (req, res) => {
+//   try {
+//     const users = await User.findAll({
+//       attributes: ['id', 'email', 'account_type', 'isVerified', 'createdAt'],
+//       order: [['createdAt', 'DESC']],
+//     });
+//     res.json({ success: true, count: users.length, data: users });
+//   } catch (err) {
+//     res.status(400).json({ success: false, error: err.message });
+//   }
+// });
 
-router.delete('/clear-all-users', async (req, res) => {
-  try {
-    // Delete related records first to avoid foreign key errors
-    await TaxRecord.destroy({ where: {} });
-    await IncomeExpense.destroy({ where: {} });
-    await Transaction.destroy({ where: {} });
-    await BusinessProfile.destroy({ where: {} });
-    await User.destroy({ where: {} });
+// router.delete('/clear-all-users', async (req, res) => {
+//   try {
+//     // Delete related records first to avoid foreign key errors
+//     await TaxRecord.destroy({ where: {} });
+//     await IncomeExpense.destroy({ where: {} });
+//     await Transaction.destroy({ where: {} });
+//     await BusinessProfile.destroy({ where: {} });
+//     await User.destroy({ where: {} });
     
-    res.json({ success: true, message: 'All users and records cleared' });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
-  }
-});
+//     res.json({ success: true, message: 'All users and records cleared' });
+//   } catch (err) {
+//     res.status(400).json({ success: false, error: err.message });
+//   }
+// });
 
-// Add this route
 router.post("/refresh_token", async (req, res) => {
   try {
     const { refreshToken } = req.body;
