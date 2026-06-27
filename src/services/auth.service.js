@@ -1,6 +1,7 @@
 import { User } from "../models/index.js";
 import generateToken from "../utils/generate.token.js";
 import BusinessProfile from "../models/business.profile.js";
+import generateToken, { generateRefreshToken } from "../utils/generate.token.js";
 
 // ==================== USER REGISTRATION ====================
 export async function createUser(userData) {
@@ -19,11 +20,21 @@ export async function userLogin({ email, password }) {
   const isPasswordValid = await user.verifyPassword(password);
   if (!isPasswordValid) throw new Error("Login failed. Incorrect password.");
 
-  const token = generateToken({ id: user.id, account_type: user.account_type, email: user.email });
+  const token = generateToken({ 
+    id: user.id, 
+    account_type: user.account_type, 
+    email: user.email 
+  });
+
+  const refreshToken = generateRefreshToken({ 
+    id: user.id, 
+    email: user.email 
+  });
 
   return {
     ...user.toJSON(),
     token,
+    refreshToken,
   };
 }
 

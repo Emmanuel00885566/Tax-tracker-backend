@@ -28,6 +28,10 @@ import TaxRecord from '../models/tax.record.model.js';
 import IncomeExpense from '../models/income.expense.model.js';
 import Transaction from '../models/transaction.model.js';
 import BusinessProfile from '../models/business.profile.js';
+import jwt from "jsonwebtoken";
+import generateToken from "../utils/generate.token.js";
+
+
 
 const router = express.Router();
 
@@ -94,6 +98,47 @@ router.delete('/clear-all-users', async (req, res) => {
     res.json({ success: true, message: 'All users and records cleared' });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// Add this route
+router.post("/refresh_token", async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Refresh token required" 
+      });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    
+    const user = await User.findByPk(decoded.id);
+    if (!user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "User not found" 
+      });
+    }
+
+    const newToken = generateToken({ 
+      id: user.id, 
+      account_type: user.account_type, 
+      email: user.email 
+    });
+
+    res.json({ 
+      success: true, 
+      token: newToken 
+    });
+
+  } catch (err) {
+    return res.status(401).json({ 
+      success: false, 
+      message: "Invalid or expired refresh token. Please login again." 
+    });
   }
 });
 
