@@ -1,5 +1,4 @@
 import { User } from "../models/index.js";
-import generateToken from "../utils/generate.token.js";
 import BusinessProfile from "../models/business.profile.js";
 import generateToken, { generateRefreshToken } from "../utils/generate.token.js";
 
