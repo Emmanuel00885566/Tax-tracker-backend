@@ -10,6 +10,7 @@ import incomeExpenseRoutes from "./src/routes/income.expense.routes.js";
 import reminderRoutes from "./src/routes/reminder.routes.js";
 import "./src/jobs/reminder.cron.js";
 import reportRoutes from "./src/routes/report.routes.js";
+import dashboardRoutes from "./src/routes/dashboard.routes.js";
 
 import "./src/models/user.model.js";
 import "./src/models/transaction.model.js";
@@ -32,7 +33,8 @@ app.use(cors({
     "https://isejosh.github.io",
     "https://taxbuddy-two.vercel.app", 
     "http://localhost:5500",
-    "http://127.0.0.1:5500"
+    "http://127.0.0.1:5500",
+    "*"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -53,6 +55,7 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/income-expense", incomeExpenseRoutes);
 app.use("/api/reminders", reminderRoutes);
 app.use("/api/report", reportRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 const PORT = process.env.PORT || 5000;
 

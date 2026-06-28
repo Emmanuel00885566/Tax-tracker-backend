@@ -30,7 +30,7 @@ import Transaction from '../models/transaction.model.js';
 import BusinessProfile from '../models/business.profile.js';
 import jwt from "jsonwebtoken";
 import generateToken from "../utils/generate.token.js";
-
+import { upload } from '../config/cloudinary.js';
 
 
 const router = express.Router();
@@ -138,6 +138,28 @@ router.post("/refresh_token", async (req, res) => {
       success: false, 
       message: "Invalid or expired refresh token. Please login again." 
     });
+  }
+});
+
+router.patch('/profile/avatar', verifyToken, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No image uploaded' });
+    }
+
+    const imageUrl = req.file.path;
+    const userId = req.user.id;
+
+    await User.update({ avatar: imageUrl }, { where: { id: userId } });
+
+    res.json({
+      success: true,
+      message: 'Profile picture updated successfully',
+      data: { avatar: imageUrl },
+    });
+  } catch (error) {
+    console.error('Avatar upload error:', error.message);
+    res.status(500).json({ success: false, message: 'Failed to upload image' });
   }
 });
 
