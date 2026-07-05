@@ -30,7 +30,6 @@ import Transaction from '../models/transaction.model.js';
 import BusinessProfile from '../models/business.profile.js';
 import jwt from "jsonwebtoken";
 import generateToken from "../utils/generate.token.js";
-import { upload } from '../config/cloudinary.js';
 
 
 const router = express.Router();
@@ -141,25 +140,29 @@ router.post("/refresh_token", async (req, res) => {
   }
 });
 
-router.patch('/profile/avatar', verifyToken, upload.single('avatar'), async (req, res) => {
+router.patch('/profile/avatar', verifyToken, async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No image uploaded' });
+    const { avatar } = req.body;
+    if (!avatar) {
+      return res.status(400).json({
+        success: false,
+        message: 'No image URL provided'
+      });
     }
 
-    const imageUrl = req.file.path;
-    const userId = req.user.id;
-
-    await User.update({ avatar: imageUrl }, { where: { id: userId } });
+    await User.update({ avatar }, { where: { id: req.user.id } });
 
     res.json({
       success: true,
       message: 'Profile picture updated successfully',
-      data: { avatar: imageUrl },
+      data: { avatar },
     });
   } catch (error) {
-    console.error('Avatar upload error:', error.message);
-    res.status(500).json({ success: false, message: 'Failed to upload image' });
+    console.error('Avatar update error:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update profile picture'
+    });
   }
 });
 
