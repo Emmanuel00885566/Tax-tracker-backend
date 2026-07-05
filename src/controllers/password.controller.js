@@ -19,13 +19,13 @@ export const forgotPassword = async (req, res) => {
     const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
     const webLink = `${process.env.CLIENT_URL}/reset-password.html?token=${resetToken}`;
-    const mobileLink = `taxtracker://reset-password/${resetToken}`;
+    const mobileLink = `taxwisy://reset-password/${resetToken}`;
 
     const text = `Hello ${user.fullname || "User"},
 
 You requested to reset your password.
 
-Open TaxBuddy app and use this link:
+Open TaxWisy app and use this link:
 ${mobileLink}
 
 Or reset via browser:
