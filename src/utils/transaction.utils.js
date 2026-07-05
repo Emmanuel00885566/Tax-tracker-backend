@@ -1,15 +1,5 @@
 /**
  * Returns totals grouped by category for a list of transactions
- * Example return:
- * {
- *   revenue: 100000,
- *   cogs: 20000,
- *   depreciation: 5000,
- *   interest: 1000,
- *   capital_allowance: 2000,
- *   other_expense: 3000,
- *   // ...
- * }
  */
 export function getTotalsByCategory(transactions = []) {
   return transactions.reduce((acc, t) => {
@@ -23,23 +13,50 @@ export function getTotalsByCategory(transactions = []) {
 
 /**
  * Compute Profit Before Tax (PBT) using category totals.
- * PBT = revenue - (cogs + other_expense + depreciation + amortization + interest + capital_allowance)
- *
- * Accepts either:
- *  - (transactions[]) -> will compute totals by category and derive PBT
- *  - or (totalsByCategory object)
+ * PBT = revenue - (all allowable deductions)
+ * Based on Nigerian CIT Act (CITA) rules
  */
 export function computePBT(input) {
   const totals = Array.isArray(input) ? getTotalsByCategory(input) : (input || {});
-  const revenue = Number(totals.revenue || 0);
-  const cogs = Number(totals.cogs || 0);
-  const otherExpenses = Number(totals.other_expense || 0);
+
+  // All income categories recognized as revenue
+  const incomeCategories = [
+    'revenue', 'income', 'salary', 'freelance', 'business',
+    'investment', 'rental', 'consulting', 'sales', 'service',
+    'other_income', 'other income',
+  ];
+
+  // All deductible expense categories
+  const deductibleCategories = [
+    'office rent', 'equipment', 'software', 'marketing',
+    'transport', 'utilities', 'other',
+  ];
+
+  // Sum all income categories as revenue
+  const revenue = incomeCategories.reduce((sum, cat) => {
+    return sum + Number(totals[cat] || 0);
+  }, 0);
+
+  // Specific allowable deductions per CITA
+  const cogs = Number(totals.cogs || totals['cost of goods sold'] || 0);
+  const otherExpenses = Number(totals.other_expense || totals['other expense'] || 0);
   const depreciation = Number(totals.depreciation || 0);
   const amortization = Number(totals.amortization || 0);
   const interest = Number(totals.interest || 0);
-  const capitalAllowance = Number(totals.capital_allowance || 0);
+  const capitalAllowance = Number(
+    totals.capital_allowance || totals['capital allowance'] || 0
+  );
 
-  const pbt = revenue - (cogs + otherExpenses + depreciation + amortization + interest + capitalAllowance);
+  // Other allowable business expenses
+  const otherAllowableExpenses = deductibleCategories.reduce((sum, cat) => {
+    return sum + Number(totals[cat] || 0);
+  }, 0);
+
+  const totalDeductions = cogs + otherExpenses + depreciation +
+    amortization + interest + capitalAllowance + otherAllowableExpenses;
+
+  const pbt = Math.max(revenue - totalDeductions, 0);
+
   return {
     revenue,
     cogs,
@@ -48,6 +65,6 @@ export function computePBT(input) {
     amortization,
     interest,
     capitalAllowance,
-    pbt: Number(pbt.toFixed(2))
+    pbt: Number(pbt.toFixed(2)),
   };
 }
