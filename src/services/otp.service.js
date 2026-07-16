@@ -32,9 +32,9 @@ const sendViaBrevo = async (email, subject, text) => {
         },
       }
     );
-    console.log(`Brevo email sent to ${email}`);
+    
   } catch (error) {
-    console.error("Brevo send failed:", error.response?.data || error.message);
+    
     throw new Error("Failed to send OTP email via Brevo.");
   }
 };
@@ -66,7 +66,7 @@ export const sendEmailOTP = async (user) => {
           subject: "Verify Your Email - TaxBuddy OTP",
           text: message,
         });
-        console.log(`Mailtrap email sent to ${user.email}`);
+        c
       }
     } catch (err) {
       console.error("Email send error:", err.message);

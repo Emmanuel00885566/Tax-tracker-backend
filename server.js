@@ -34,7 +34,6 @@ app.use(cors({
     "https://taxbuddy-two.vercel.app", 
     "http://localhost:5500",
     "http://127.0.0.1:5500",
-    "*"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -64,12 +63,11 @@ const startServer = async () => {
 
     await connectDB();
 
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: false });
 
-    console.log("Models synchronized with PostgreSQL.");
 
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      
     });
   } catch (err) {
     console.error("Failed to start server:", err.message);

@@ -133,19 +133,39 @@ export async function deleteIncomeExpenseController(req, res) {
 }
 
 // Get income/expense summary for a user
-export async function getIncomeExpenseSummaryController(req, res) {
+export async function getIncomeExpensesController(req, res) {
   try {
     const { userId } = req.params;
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, type, category, limit = 10, offset = 0 } = req.query;
 
-    const summary = await getIncomeExpenseSummary(userId, { startDate, endDate });
+    const records = await getIncomeExpenses(userId, {
+      startDate,
+      endDate,
+      type,
+      category,
+      limit: Number(limit),
+      offset: Number(offset)
+    });
+
+    // Get total count for pagination
+    const allRecords = await getIncomeExpenses(userId, {
+      startDate,
+      endDate,
+      type,
+      category,
+      limit: 10000,
+      offset: 0
+    });
 
     return res.status(200).json({
       success: true,
-      data: summary
+      count: records.length,
+      total: allRecords.length,
+      hasMore: Number(offset) + records.length < allRecords.length,
+      data: records
     });
   } catch (err) {
-    console.error("getIncomeExpenseSummaryController error:", err);
+    console.error("getIncomeExpensesController error:", err);
     return res.status(500).json({ success: false, error: err.message });
   }
 }

@@ -37,7 +37,7 @@ export async function sendEmail(to, subject, text, html) {
   try {
     if (provider === "brevo") {
       await sendViaBrevo(to, subject, text, html);
-      console.log(`Brevo email sent to ${to}`);
+      
     } else {
       await mailtrapTransporter.sendMail({
         from: `"TaxBuddy Notifications" <${process.env.EMAIL_USER}>`,
@@ -46,9 +46,8 @@ export async function sendEmail(to, subject, text, html) {
         text,
         html,
       });
-      console.log(`Mailtrap email sent to ${to}`);
+      
     }
   } catch (error) {
-    console.error(`Email send error:`, error.message);
   }
 }
