@@ -44,11 +44,11 @@ export async function createIncomeExpenseController(req, res) {
   }
 }
 
-// Get all income/expense records for a user
+// Get all income/expense records for a user — with pagination
 export async function getIncomeExpensesController(req, res) {
   try {
     const { userId } = req.params;
-    const { startDate, endDate, type, category, limit = 100, offset = 0 } = req.query;
+    const { startDate, endDate, type, category, limit = 10, offset = 0 } = req.query;
 
     const records = await getIncomeExpenses(userId, {
       startDate,
@@ -59,9 +59,21 @@ export async function getIncomeExpensesController(req, res) {
       offset: Number(offset)
     });
 
+    // Get total count for pagination
+    const allRecords = await getIncomeExpenses(userId, {
+      startDate,
+      endDate,
+      type,
+      category,
+      limit: 10000,
+      offset: 0
+    });
+
     return res.status(200).json({
       success: true,
       count: records.length,
+      total: allRecords.length,
+      hasMore: Number(offset) + records.length < allRecords.length,
       data: records
     });
   } catch (err) {
@@ -133,39 +145,19 @@ export async function deleteIncomeExpenseController(req, res) {
 }
 
 // Get income/expense summary for a user
-export async function getIncomeExpensesController(req, res) {
+export async function getIncomeExpenseSummaryController(req, res) {
   try {
     const { userId } = req.params;
-    const { startDate, endDate, type, category, limit = 10, offset = 0 } = req.query;
+    const { startDate, endDate } = req.query;
 
-    const records = await getIncomeExpenses(userId, {
-      startDate,
-      endDate,
-      type,
-      category,
-      limit: Number(limit),
-      offset: Number(offset)
-    });
-
-    // Get total count for pagination
-    const allRecords = await getIncomeExpenses(userId, {
-      startDate,
-      endDate,
-      type,
-      category,
-      limit: 10000,
-      offset: 0
-    });
+    const summary = await getIncomeExpenseSummary(userId, { startDate, endDate });
 
     return res.status(200).json({
       success: true,
-      count: records.length,
-      total: allRecords.length,
-      hasMore: Number(offset) + records.length < allRecords.length,
-      data: records
+      data: summary
     });
   } catch (err) {
-    console.error("getIncomeExpensesController error:", err);
+    console.error("getIncomeExpenseSummaryController error:", err);
     return res.status(500).json({ success: false, error: err.message });
   }
 }
